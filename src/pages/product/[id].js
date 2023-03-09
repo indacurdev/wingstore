@@ -144,7 +144,7 @@ function ViewProduct(props) {
 
 ViewProduct.getInitialProps = async ({ query }) => {
     const { id } = query;
-    const product = await axios.get(`${API_URL}/product/${id}/`);
+    const product = await axios.get(`${API_URL}/product/${id}`);
 
     return {
         id,

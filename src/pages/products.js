@@ -82,7 +82,7 @@ function Products(props) {
 
 Products.getInitialProps = wrapper.getInitialPageProps((store) => async () => {
     const state = store.getState();
-    const products = await axios.get(`${API_URL}/products/${state.app.selectedCountry.id}/`);
+    const products = await axios.get(`${API_URL}/products/${state.app.selectedCountry.id}`);
     
     return {
         products: products.data
