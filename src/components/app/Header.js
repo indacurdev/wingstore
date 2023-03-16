@@ -51,6 +51,8 @@ function Header() {
               {/* Dropdowns */}
               <div className="col-lg-4 col-9 d-flex justify-content-end">
 
+                <CountriesDropdown />
+
                 {/* USER */}
                 <Dropdown className='dropdown-user d-none'>
                   <Dropdown.Toggle id="dropdown-user">
@@ -111,8 +113,6 @@ function Header() {
                     </div>
                   </Dropdown.Menu>
                 </Dropdown>
-
-                <CountriesDropdown />
 
                 <button className='btn btn-primary fw-bold'> 
                   Iniciar sesión

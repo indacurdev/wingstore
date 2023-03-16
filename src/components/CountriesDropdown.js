@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie';
 import { Dropdown } from 'react-bootstrap';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { setSelectedCountry } from '@/store/slices/app';
 
 function CountriesDropdown() {
 
     const app           = useSelector((state) => state.app, shallowEqual);
+    const dispatch      = useDispatch();
     const router        = useRouter();
     const countries     = app.countries;
     const [country, setcountry] = useState(app.selectedCountry);
@@ -16,8 +18,12 @@ function CountriesDropdown() {
         const countrystr = JSON.stringify(item);
         // console.log(countrystr);
         Cookies.set('country', countrystr);
-        router.reload(window.location.pathname);
+        // dispatch(setSelectedCountry(item));
+        // router.push('/');
+        router.reload();
     }
+
+    // console.log(country);
 
     return (
         <>
@@ -29,11 +35,15 @@ function CountriesDropdown() {
                     id="dropdown-countries"
                     >
                     {country &&
-                        <div className='country-selected'>
-                        <span className="fi fi-ve" />
-                        <span className='d-lg-inline-flex ms-2'>
-                            {country.nombre}
-                        </span>
+                        <div className='country-selected d-inline-flex align-items-center'>
+                            {country.codigo_iso && country.codigo_iso.toLowerCase() !== "xx" ?
+                                <span className={`fi fi-${country.codigo_iso.toLowerCase()} me-2`} />
+                            : 
+                                <i className="fa-solid text-secondary fa-globe"></i>
+                            }
+                            <span className='d-lg-inline-flex ms-2'>
+                                {country.nombre}
+                            </span>
                         </div>
                     }
                     </Dropdown.Toggle>
@@ -42,7 +52,11 @@ function CountriesDropdown() {
                     {countries.map((item, key) => {
                         return (
                         <Dropdown.Item key={key} onClick={() => changeCountry(item)}>
-                            <span className="fi fi-us me-2" />
+                            {item.codigo_iso && item.codigo_iso.toLowerCase() !== "xx" ?
+                                <span className={`fi fi-${item.codigo_iso.toLowerCase()} me-2`} />
+                            : 
+                                <span className='global-flag text-secondary me-2'><i className="fa-solid fa-globe"></i></span>
+                            }
                             <span>{item.nombre}</span>
                         </Dropdown.Item>
                         )

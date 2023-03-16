@@ -10,6 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { loadInitialFunctions } from "@/utils/loadStore";
 
 import "../styles/sass/style.scss"
+import Loader from "@/components/Loader";
 
 function MyApp({ Component, ...rest }) {
 
@@ -19,8 +20,6 @@ function MyApp({ Component, ...rest }) {
   useEffect(() => {
     const initialStoreAfterLoading = store.getState();
     const country = initialStoreAfterLoading.app.selectedCountry;
-    
-    // console.log(country);
 
     const countrystr = JSON.stringify(country);
     Cookies.set('country', countrystr);
@@ -33,7 +32,7 @@ function MyApp({ Component, ...rest }) {
     <Provider store={store}>
       <PersistGate 
         persistor={store.__persistor} 
-        loading={<div>Loading</div>}
+        loading={<Loader />}
       >
         <Component {...pageProps} />
       </PersistGate>

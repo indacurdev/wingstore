@@ -31,7 +31,7 @@ function Product({ name = "" , plans, slug = ""}) {
                                     {name}
                                 </h3>
                             </div>
-                            <h6 className="h5 mb-0 fw-bold text-primary mb-2">
+                            <h6 className="h5 mb-0 fw-bold text-primary mb-2 d-none">
                                 {plans.length > 0 
                                     ?
                                     <span>

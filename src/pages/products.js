@@ -14,9 +14,11 @@ import Product from '@/components/products/Product'
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import 'swiper/css';
+import Pagination from '@/components/Pagination';
 
 function Products(props) {
     const products = props.products;
+    console.log(products);
 
     return (
         <>
@@ -61,7 +63,7 @@ function Products(props) {
                                     return (
                                     <div key={key} className="col-lg-3 col-6 col-md-4 mb-4">
                                         <Product 
-                                            slug={`${item.id_producto}`}
+                                            slug={`${item.slug}`}
                                             name={item.nombre}
                                             type={item.tipo}
                                             plans={plans}
@@ -70,8 +72,7 @@ function Products(props) {
                                     )
                                 })}
                             </div>
-                            <div className="text-center">
-                            </div>
+                            <Pagination />
                         </div>
                     </section>
                 </div>
@@ -81,11 +82,37 @@ function Products(props) {
 }
 
 Products.getInitialProps = wrapper.getInitialPageProps((store) => async () => {
-    const state = store.getState();
-    const products = await axios.get(`${API_URL}/products/${state.app.selectedCountry.id}`);
+    const state       = store.getState();
+    const products    = await axios.get(`${API_URL}/products/${state.app.selectedCountry.id}`);
     
+    const productList  = [];
+    let productsInPage = 1;
+    let page = 1;
+
+    const maxPagination = 24;
+
+    if(products.data.length > 0){
+        for (let i = 0; i < products.data.length; i++) {
+            let product = products.data[i];
+            product.page = page;
+
+            if(productsInPage === maxPagination){
+                productsInPage = 1;
+                page++;
+            }else{
+                productsInPage++;
+            }
+
+            productList.push(product);
+        }
+    }
+
+    const finalProducts =  productList.length > 0 ? productList.filter((item) => item.page === 1) : [];
+
     return {
-        products: products.data
+        products:       finalProducts,
+        totalProducts:  productList.length,
+        data:           productList
     }
 });
 

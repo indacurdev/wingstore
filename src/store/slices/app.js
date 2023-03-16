@@ -2,8 +2,10 @@ import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 const initialState = {
-    countries: [],
-    selectedCountry : null
+    countries:        [],
+    selectedCountry : null,
+    paymentMethods:   [],
+    banners:          []
 };
 
 const hydrate = createAction(HYDRATE);
@@ -17,6 +19,12 @@ export const appSlice = createSlice({
         },
         setSelectedCountry(state, action) {
             state.selectedCountry = action.payload;
+        },
+        setPaymentMethods(state, action) {
+            state.paymentMethods = action.payload;
+        },
+        setBanners(state, action) {
+            state.banners = action.payload;
         }
     },
     extraReducers: {
@@ -29,5 +37,5 @@ export const appSlice = createSlice({
     }, 
 });
 
-export const { setCountries, setSelectedCountry } = appSlice.actions;
+export const { setCountries, setSelectedCountry, setPaymentMethods, setBanners } = appSlice.actions;
 export default appSlice.reducer;

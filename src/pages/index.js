@@ -12,12 +12,17 @@ import Particles from '@/components/Particles';
 import { wrapper } from '@/store/store';
 import { setCountries, setSelectedCountry } from '@/store/slices/app';
 import axios from 'axios';
-import { API_URL } from '@/config/config';
+import { API_URL, IMAGESURL } from '@/config/config';
 import { loadInitialFunctions } from '@/utils/loadStore';
+import Loader from '@/components/Loader'
+import { useSelector } from 'react-redux'
 
 function Home(props) {
   const products = !props.products ? [] : props.products.data;
-  // console.log(products);
+  // const banners  = useSelector((state) => state.app.banners);
+  const banners = [];
+
+  console.log(banners);
 
   return (
     <>
@@ -33,36 +38,58 @@ function Home(props) {
               // onSlideChange={() => console.log('slide change')}
               // onSwiper={(swiper) => console.log(swiper)}
             >
-              <SwiperSlide>
-                <div className="min-vh-100 d-flex align-items-center">
-                  <Particles />
-                  <div className='overlay-slider'></div>
-                  <div className="content-overlay bg-one">
-                  </div>
-                  <div className="container content-slider text-light">
-                    <h2 className='text-big mb-0 fb'>Wings store</h2>
-                    <h3 className='text-big fb'>Creado por gamers para gamers</h3>
-                    <p className='mb-5 h5'>
-                      Ofrecemos el mejor servicio en recargas en tus juegos favoritos
-                    </p>
-                    <Link href="/products" className='btn btn-lg btn-primary btn-rounded fw-bold px-4 shadow'>
-                      ¡Explora nuestro catalogo!
-                    </Link>
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="min-vh-100 d-flex align-items-center bg-primary">
-                  <div className="container">
-                    <h2 className='text-big fb text-secondary'>
-                      Disfruta de nuestras promociones
-                    </h2>
-                  </div>
-                </div>
-              </SwiperSlide>
+              {Array.isArray(banners) && banners.length > 0 ?
+                <>
+                  {banners.map((item, key) => {
+                    return (
+                      <SwiperSlide key={key}>
+                        <div className="min-vh-100 d-flex align-items-center position-relative">
+                            <div className='img-full'>
+                              <img 
+                                src={`${IMAGESURL}/${item.imagen}`} 
+                                alt={`${item.nombre}`} 
+                              />
+                            </div>
+                        </div>
+                      </SwiperSlide>
+                    )
+                  })}
+                </>
+              :
+                <>
+                  <SwiperSlide>
+                    <div className="min-vh-100 d-flex align-items-center">
+                      <Particles />
+                      <div className='overlay-slider'></div>
+                      <div className="content-overlay bg-one">
+                      </div>
+                      <div className="container content-slider text-light">
+                        <h2 className='text-big mb-0 fb'>Wings store</h2>
+                        <h3 className='text-big fb'>Creado por gamers para gamers</h3>
+                        <p className='mb-5 h5'>
+                          Ofrecemos el mejor servicio en recargas en tus juegos favoritos
+                        </p>
+                        <Link href="/products" className='btn btn-lg btn-primary btn-rounded fw-bold px-4 shadow'>
+                          ¡Explora nuestro catalogo!
+                        </Link>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <div className="min-vh-100 d-flex align-items-center bg-primary">
+                      <div className="container">
+                        <h2 className='text-big fb text-secondary'>
+                          Disfruta de nuestras promociones
+                        </h2>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                </>
+              }
+              
             </Swiper>
-          
         </section>
+        
         <div className="position-relative pt-5">
           <div className="bg-olverlay bg-primary"></div>
           <div className="container bg-container">
@@ -159,7 +186,7 @@ function Home(props) {
                       return (
                         <div key={key} className="col-lg-3 col-6 col-md-4 mb-4">
                             <Product 
-                              slug={item.id_producto}
+                              slug={item.slug}
                               name={item.nombre}
                               type={item.tipo}
                               plans={plans}

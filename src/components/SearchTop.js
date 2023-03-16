@@ -69,8 +69,8 @@ function SearchTop() {
                             {lista.map((item, key) => {
                                 return (
                                     <li key={key}>
-                                        <Link href={`/product/${item.id_producto}`} onClick={() => clean()}>
-                                            <i class="fa-solid fa-magnifying-glass me-2 d-none"></i> 
+                                        <Link href={`/product/${item.slug}`} onClick={() => clean()}>
+                                            <i className="fa-solid fa-magnifying-glass me-2 d-none"></i> 
                                             <span>
                                                 {item.nombre}
                                             </span>
