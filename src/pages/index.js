@@ -45,7 +45,7 @@ function Home(props) {
                       <SwiperSlide key={key}>
                         <div className="min-vh-100 d-flex align-items-center position-relative">
                             <div className='img-full'>
-                              <img 
+                              <Image fill
                                 src={`${IMAGESURL}/${item.imagen}`} 
                                 alt={`${item.nombre}`} 
                               />
