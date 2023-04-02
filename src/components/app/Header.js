@@ -5,8 +5,11 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import CountriesDropdown from '../CountriesDropdown';
 import SearchTop from '../SearchTop';
 import Image from 'next/image'
+import { useAuth } from '@/context/auth';
+import UserDropdown from '../UserDropdown';
 
 function Header() {
+  const auth = useAuth().auth;
 
   return (
     <div>
@@ -51,72 +54,19 @@ function Header() {
               {/* Dropdowns */}
               <div className="col-lg-4 col-9 d-flex justify-content-end">
 
+                {/* LANG DROPDOWN */}
                 <CountriesDropdown />
 
                 {/* USER */}
-                <Dropdown className='dropdown-user d-none'>
-                  <Dropdown.Toggle id="dropdown-user">
-                    <div className='fw-bold'>
-                      <i className="fa-solid fa-coins" />
-                      <span className="ms-2">60.00</span>
-                    </div>
-                    <div className="d-none">
-                      <i className="fa-regular fa-user text-primary" />
-                      <span className="ms-2">Renny</span>
-                    </div>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu align="end" className='menu-user-top'>
-                    <div className="px-3 py-2">
-                      <p className="mb-1 h4 fw-bold text-center text-secondary">
-                        Renny
-                      </p>
-                      <p className="mb-4 h6 text-center text-muted">
-                        Renny@gmail.com
-                      </p>
-                      <button className="btn btn-primary fw-bold w-100 mb-3">
-                        <i className="fa-regular fa-user text-secondary me-2" />
-                        Ver perfil 
-                      </button>
-                      <button className="btn-outline-secondary mb-3 w-100 fw-bold px-3 btn me-3">
-                        <i className="fa-solid fa-bag-shopping me-2" />
-                        Comprar wcoins 
-                      </button>
-                      <ul className="user-data-list-dropdown">
-                        <li>
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div className="text-left">
-                              <i className="fa-solid text-primary fa-coins me-2" />
-                              <span>Wpoints</span>
-                            </div>
-                            <div className="fw-bold text-secondary">
-                              <span>5.00</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div className="text-left">
-                              <i className="fa-solid text-primary fa-coins me-2" />
-                              <span>Wcoins</span>
-                            </div>
-                            <div className="fw-bold text-secondary">
-                              <span>60.00</span>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                      <hr />
-                      <button className="btn btn-unstyled fw-bold w-100">
-                        <i className="fa-solid fa-right-from-bracket me-2" />
-                        Cerrar sesión
-                      </button>
-                    </div>
-                  </Dropdown.Menu>
-                </Dropdown>
+                {auth &&
+                  <UserDropdown />
+                }
 
-                <button className='btn btn-primary fw-bold'> 
-                  Iniciar sesión
-                </button>
+                {!auth &&
+                  <Link href={`/login`} className='btn btn-primary fw-bold'> 
+                    Iniciar sesión
+                  </Link>
+                }
 
               </div>
 

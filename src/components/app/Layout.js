@@ -11,14 +11,19 @@ function Layout(props) {
   return (
     <div>
         <div className="page-wrapper">
-            <Header />
+            {!props.blank &&
+              <Header />
+            }
             <div className="page-content">
               {props.children}
             </div>
-            <Footer />
+            {!props.blank &&
+              <Footer />
+            }
         </div>
     </div>
   )
+  
 }
 
 export default Layout

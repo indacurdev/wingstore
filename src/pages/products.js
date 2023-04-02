@@ -84,35 +84,36 @@ function Products(props) {
 Products.getInitialProps = wrapper.getInitialPageProps((store) => async () => {
     const state       = store.getState();
     const products    = await axios.get(`${API_URL}/products/${state.app.selectedCountry.id}`);
-    
-    const productList  = [];
-    let productsInPage = 1;
-    let page = 1;
+    /*
+        const productList  = [];
+        let productsInPage = 1;
+        let page = 1;
 
-    const maxPagination = 24;
+        const maxPagination = 24;
 
-    if(products.data.length > 0){
-        for (let i = 0; i < products.data.length; i++) {
-            let product = products.data[i];
-            product.page = page;
+        if(products.data.length > 0){
+            for (let i = 0; i < products.data.length; i++) {
+                let product = products.data[i];
+                product.page = page;
 
-            if(productsInPage === maxPagination){
-                productsInPage = 1;
-                page++;
-            }else{
-                productsInPage++;
+                if(productsInPage === maxPagination){
+                    productsInPage = 1;
+                    page++;
+                }else{
+                    productsInPage++;
+                }
+
+                productList.push(product);
             }
-
-            productList.push(product);
         }
-    }
 
-    const finalProducts =  productList.length > 0 ? productList.filter((item) => item.page === 1) : [];
+        const finalProducts =  productList.length > 0 ? productList.filter((item) => item.page === 1) : [];
+    */
 
     return {
-        products:       finalProducts,
-        totalProducts:  productList.length,
-        data:           productList
+        products:       products.data,
+        totalProducts:  products.data.length,
+        data:           products.data
     }
 });
 

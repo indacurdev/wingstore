@@ -16,6 +16,7 @@ import { API_URL, IMAGESURL } from '@/config/config';
 import { loadInitialFunctions } from '@/utils/loadStore';
 import Loader from '@/components/Loader'
 import { useSelector } from 'react-redux'
+import { useAuth } from '@/context/auth'
 
 function Home(props) {
   const products = !props.products ? [] : props.products.data;
@@ -23,6 +24,8 @@ function Home(props) {
   const banners = [];
 
   console.log(banners);
+
+  const auth = useAuth();
 
   return (
     <>
@@ -268,11 +271,13 @@ function Home(props) {
                     </div>
                   </div>
 
-                  <div className=''>
-                    <button className='btn btn-lg btn-primary px-5 fw-bold shadow'>
-                      Inicia sesión
-                    </button>
-                  </div>
+                  {!auth.auth &&
+                    <div className=''>
+                      <Link href={`/login`} className='btn btn-lg btn-primary px-5 fw-bold shadow'>
+                        Inicia sesión
+                      </Link>
+                    </div>
+                  }
                 </div>
               </div>
             </div>

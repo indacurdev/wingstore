@@ -33,12 +33,13 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-  app: appSlice.reducer, 
+  session:  sessionSlice.reducer,
+  app:      appSlice.reducer
 });
 
 const makeConfiguredStore = () => configureStore({
     reducer: rootReducer,
-    devTools: true,
+    devTools:   process.env.NODE_ENV !== "production",
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
       serializableCheck: false
     }),

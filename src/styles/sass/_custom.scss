@@ -191,7 +191,7 @@ header{
                                 align-items: center;
                                 color: $secondary;
                                 text-decoration: none;
-                                padding: 8px 12px;
+                                padding: 12px 18px;
 
                                 &:hover{
                                     background-color: $primary;
@@ -673,6 +673,12 @@ header{
     transform: skew(4deg, 4deg);
 }
 
+@media screen and (max-width: 768px) {
+    .content-shape-footer{
+        width: 120%;
+    }
+}
+
 .link-unstyled{
     text-decoration: none;
 }
@@ -936,12 +942,30 @@ footer{
         background-color: $light;
         border: 1px solid #ced4da;
         border-radius: 12px;
-        height: 50px;
+        height: 60px;
+        position: relative;
+
+        transition: all .2s ease;
+
+        &::before{
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba($secondary, .1);
+        }
 
         &.active{
             background-color: $primary;
             color: $light;
             border-color: $primary;
+
+            &::before{
+                background: rgba($light, .1);
+            }
         }
     }
 }
@@ -964,4 +988,82 @@ header{
             color: $secondary;
         }
     }
+}
+
+.header-blank{
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0px 4px 5px rgba(#303030, .03);
+}
+
+.link-unstyled{
+    text-decoration: none;
+}
+
+.content-login{
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.has-error{
+    .form-control{
+        border-color: $danger;
+        color: $danger;
+    }
+}
+
+.react-date-picker{
+    display: flex !important;
+    width: 100%;
+
+    .react-date-picker__wrapper{
+        padding: 0.5rem 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #303030;
+        background-color: #F4F6FC;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        appearance: none;
+        border-radius: 12px;
+        
+        user-select: none;
+    }
+}
+
+.input-group-text{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.content-paypal-btn{
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+.paypal-button-text{
+    display: none !important;
+}
+
+.text-readonly{
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #303030;
+    background-color: #F4F6FC;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    appearance: none;
+    border-radius: 12px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }

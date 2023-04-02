@@ -9,13 +9,32 @@ import { wrapper } from "../store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { loadInitialFunctions } from "@/utils/loadStore";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import "../styles/sass/style.scss"
+
+import Router from "next/router";
+import NProgress from 'nprogress'
 import Loader from "@/components/Loader";
+import { AuthProvider } from "@/context/auth";
 
 function MyApp({ Component, ...rest }) {
 
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
+
+  Router.events.on("routeChangeStart", (url) => {
+    NProgress.start();
+  });
+
+  Router.events.on("routeChangeComplete", (url)=>{
+    NProgress.done(false);
+  });
+
+  Router.events.on("routeChangeError", (url) =>{
+    NProgress.done(false);
+  });
 
   useEffect(() => {
     const initialStoreAfterLoading = store.getState();
@@ -34,7 +53,10 @@ function MyApp({ Component, ...rest }) {
         persistor={store.__persistor} 
         loading={<Loader />}
       >
-        <Component {...pageProps} />
+        <AuthProvider>
+          <ToastContainer />
+          <Component {...pageProps} />
+        </AuthProvider>
       </PersistGate>
     </Provider>
   </>

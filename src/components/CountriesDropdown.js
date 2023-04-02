@@ -49,18 +49,20 @@ function CountriesDropdown() {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu align="end">
-                    {countries.map((item, key) => {
-                        return (
-                        <Dropdown.Item key={key} onClick={() => changeCountry(item)}>
-                            {item.codigo_iso && item.codigo_iso.toLowerCase() !== "xx" ?
-                                <span className={`fi fi-${item.codigo_iso.toLowerCase()} me-2`} />
-                            : 
-                                <span className='global-flag text-secondary me-2'><i className="fa-solid fa-globe"></i></span>
+                        {countries.map((item, key) => {
+                            if(country.nombre !== item.nombre){
+                                return (
+                                    <Dropdown.Item key={key} onClick={() => changeCountry(item)}>
+                                        {item.codigo_iso && item.codigo_iso.toLowerCase() !== "xx" ?
+                                            <span className={`fi fi-${item.codigo_iso.toLowerCase()} me-2`} />
+                                        : 
+                                            <span className='global-flag text-secondary me-2'><i className="fa-solid fa-globe"></i></span>
+                                        }
+                                        <span>{item.nombre}</span>
+                                    </Dropdown.Item>
+                                )
                             }
-                            <span>{item.nombre}</span>
-                        </Dropdown.Item>
-                        )
-                    })}
+                        })}
                     </Dropdown.Menu>
                 </Dropdown>
             }

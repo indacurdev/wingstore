@@ -3,9 +3,9 @@
 const path = require('path')
 
 module.exports = {
-  trailingSlash: true,
+  trailingSlash: false,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  reactStrictMode: true
+  reactStrictMode: false
 }

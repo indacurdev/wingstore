@@ -72,7 +72,7 @@ function SearchTop() {
                                         <Link href={`/product/${item.slug}`} onClick={() => clean()}>
                                             <i className="fa-solid fa-magnifying-glass me-2 d-none"></i> 
                                             <span>
-                                                {item.nombre}
+                                                <i className="me-3 fa-solid fa-arrow-up-right-from-square"></i> {item.nombre}
                                             </span>
                                         </Link>
                                     </li>

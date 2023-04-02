@@ -1,16 +1,23 @@
-import axios from "axios";
-import { API_URL } from "@/config/config";
+import axios from "../lib/fetch";
 
 import { setBanners, setCountries, setPaymentMethods, setSelectedCountry } from "@/store/slices/app";
 import { getCookieFromReq } from "./functions";
+import { addToken } from "@/lib/fetch";
 
 export const loadInitialFunctions = async (store, req) => {
     const initialstate = store.getState();
     let defaultCountry = null;
 
+    // si existe un token en las cookies
     if(initialstate.app.countries.length === 0){
 
-        const countries = await axios.get(`${API_URL}/countries`);
+        const token = getCookieFromReq(req, 'wtoken');
+        console.log(token);
+        if(token && token !== ""){
+            addToken(token);
+        }
+
+        const countries = await axios.get(`/countries`);
         await store.dispatch(setCountries(countries.data));
 
         if(countries.data.length > 0){
@@ -25,19 +32,19 @@ export const loadInitialFunctions = async (store, req) => {
             }
 
             if(initialstate.app.selectedCountry === null){
-                store.dispatch(setSelectedCountry(defaultCountry));
+                await store.dispatch(setSelectedCountry(defaultCountry));
             }
         }
 
-    }
-
-    if(initialstate.app.paymentMethods.length === 0){
-        const methods = await axios.get(`${API_URL}/methods/${defaultCountry.id}`);
-        await store.dispatch(setPaymentMethods(methods.data));
-    }
-
-    if(initialstate.app.banners.length === 0){
-        const banners = await axios.get(`${API_URL}/banners/${defaultCountry.id}`);
-        await store.dispatch(setBanners(banners.data));
+        if(initialstate.app.paymentMethods.length === 0){
+            const methods = await axios.get(`/methods/${defaultCountry.id}`);
+            await store.dispatch(setPaymentMethods(methods.data));
+        }
+    
+        if(initialstate.app.banners.length === 0){
+            //console.log(defaultCountry);
+            const banners = await axios.get(`/banners/${defaultCountry.id}`);
+            await store.dispatch(setBanners(banners.data));
+        }
     }
 }

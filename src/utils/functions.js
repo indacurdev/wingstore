@@ -7,21 +7,25 @@ export const getCookieFromReq = (req, cookieKey) => {
     return cookie.split("=")[1];
 };
 
-export const getTemplate = (template = []) => {
-  let items = [];  
-
-  if(template.length > 0){
-    template.map(item => {
-      items.push(
-        <input 
-          type="text" 
-          name={item.nombre} 
-          placeholder={item.nombre} 
-          className="form-control" 
-        />
-      )
-    });
+export const getTemplate = (item, onchange) => {
+  if(item){
+    return (
+      <input 
+        type="text" 
+        id={item.id}
+        name={item.name} 
+        placeholder={item.placeholder} 
+        className="form-control" 
+        onChange={(e) => onchange(e.target.value)}
+      />
+    );
   }
-
-  return items;
 }
+
+export const slugify = str =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
