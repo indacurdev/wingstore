@@ -11,13 +11,15 @@ function UserDropdown() {
 
     const [loadingActions, setloadingActions] = useState(false);
 
-    const handleLogout = () => {
-        setloadingActions(true);
-        auth.handleLogout();
-        if(typeof window !== "undefined"){
-            Router.reload();
+    /*
+        const handleLogout = () => {
+            setloadingActions(true);
+            auth.handleLogout();
+            if(typeof window !== "undefined"){
+                Router.reload();
+            }
         }
-    }
+    */
 
     return (
         <>
@@ -48,10 +50,10 @@ function UserDropdown() {
                         <i className="fa-regular fa-user text-secondary me-2" />
                         Ver perfil 
                     </Link>
-                    <button disabled className="btn-outline-secondary mb-3 w-100 fw-bold px-3 btn me-3">
+                    <Link href={`/`} className="btn-outline-secondary mb-3 w-100 fw-bold px-3 btn me-3">
                         <i className="fa-solid fa-bag-shopping me-2" />
                         Comprar wcoins 
-                    </button>
+                    </Link>
                     <ul className="user-data-list-dropdown">
                         <li>
                             <div className="d-flex align-items-center justify-content-between">
@@ -64,38 +66,44 @@ function UserDropdown() {
                             </div>
                             </div>
                         </li>
-                        {/* 
-                            <li>
-                                <div className="d-flex align-items-center justify-content-between">
-                                <div className="text-left">
-                                    <i className="fa-solid text-primary fa-coins me-2" />
-                                    <span>Wcoins</span>
-                                </div>
-                                <div className="fw-bold text-secondary">
-                                    <span>60.00</span>
-                                </div>
-                                </div>
-                            </li>
-                        */}
+                        <li>
+                            <div className="d-flex align-items-center justify-content-between">
+                            <div className="text-left">
+                                <i className="fa-solid text-primary fa-coins me-2" />
+                                <span>Wcoins</span>
+                            </div>
+                            <div className="fw-bold text-secondary">
+                                <span>60.00</span>
+                            </div>
+                            </div>
+                        </li>
                     </ul>
                     <hr />
-                    <button 
-                        disabled={loadingActions}
-                        onClick={() => handleLogout()} 
-                        className="btn btn-unstyled fw-bold w-100"
-                    >
-                        {loadingActions ? 
-                            <>
-                                <i className="fa-solid fa-right-from-bracket me-2" />
-                                Cerrar sesión
-                            </>
-                        : 
-                            <>
-                                <i className="fa-solid fa-right-from-bracket me-2" />
-                                Cerrar sesión
-                            </>
-                        }
-                    </button>
+                    <Link href={`/logout`} className="btn btn-unstyled fw-bold w-100">
+                        <>
+                            <i className="fa-solid fa-right-from-bracket me-2" />
+                            Cerrar sesión
+                        </>
+                    </Link>
+                    {/* 
+                        <button 
+                            disabled={loadingActions}
+                            onClick={() => handleLogout()} 
+                            className="btn btn-unstyled fw-bold w-100"
+                        >
+                            {loadingActions ? 
+                                <>
+                                    <i className="fa-solid fa-right-from-bracket me-2" />
+                                    Cerrar sesión
+                                </>
+                            : 
+                                <>
+                                    <i className="fa-solid fa-right-from-bracket me-2" />
+                                    Cerrar sesión
+                                </>
+                            }
+                        </button>
+                    */}
                 </div>
                 </Dropdown.Menu>
             </Dropdown>

@@ -1067,3 +1067,31 @@ header{
     border-radius: 12px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+.accountMenu{
+    .nav{
+        .nav-item{
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+
+            &:last-of-type{
+                margin-bottom: 0px;
+            }
+            
+            .nav-link{
+                color: $dark;
+                transition: all .2s ease;
+
+                &:hover{
+                    background-color: $light;
+                }
+
+                &.active{
+                    background-color: rgba($primary, .8);
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

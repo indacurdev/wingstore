@@ -150,7 +150,7 @@ function ViewProduct(props) {
     return (
         <>
             <Head>
-                <title>Wings || product</title>
+                <title>Wings - {product.nombre}</title>
             </Head>
             <Layout>
                 <div className="page-content-wrapper">

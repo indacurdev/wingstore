@@ -64,7 +64,7 @@ function Footer() {
                           </a>
                         </li>
                         <li>
-                          <a href="" className='btn-secondary btn'>
+                          <a href="" className='btn-secondary btn active'>
                             <i className="fa-brands fa-whatsapp"></i>
                           </a>
                         </li>

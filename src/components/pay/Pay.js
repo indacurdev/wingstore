@@ -137,7 +137,7 @@ function Pay({cancel, product, data, method, plan}) {
         }
 
         //print data
-        //console.log(dataToSend);
+        console.log('PAY', dataToSend);
 
         setsending(true);
         const url = `${API_URL}/save_sale/`;

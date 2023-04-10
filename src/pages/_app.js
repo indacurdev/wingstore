@@ -47,6 +47,7 @@ function MyApp({ Component, ...rest }) {
   return <>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" type="image/png" href="/img/isotipo.png"></link>
     </Head>
     <Provider store={store}>
       <PersistGate 

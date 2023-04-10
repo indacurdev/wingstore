@@ -7,6 +7,7 @@ import { addToken } from "@/lib/fetch";
 export const loadInitialFunctions = async (store, req) => {
     const initialstate = store.getState();
     let defaultCountry = null;
+    console.log(initialstate);
 
     // si existe un token en las cookies
     if(initialstate.app.countries.length === 0){

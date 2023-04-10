@@ -13,13 +13,15 @@ import PublicRoute from '@/components/auth/PublicRoute';
 import { useAuth } from '@/context/auth';
 import { addToken } from '@/lib/fetch';
 import { useRouter } from 'next/router';
+import SocialBtn from '@/components/auth/SocialBtn';
+import Head from 'next/head';
 
 function Login() {
   const auth = useAuth();
   const router = useRouter();
 
-  const [email, setemail] = useState('leonciorequena1995@gmail.com');
-  const [pass, setpass] = useState('1234');
+  const [email, setemail] = useState('');
+  const [pass, setpass] = useState('');
   const [loading, setloading] = useState(true);
   const [sending, setsending] = useState('');
 
@@ -88,10 +90,20 @@ function Login() {
       setloading(false);
     }
   }, []);
+
+  const handleSocialLogin = (user) => {
+    console.log(user);
+  };
   
+  const handleSocialLoginFailure = (err) => {
+    console.error(err);
+  };
 
   return (
     <PublicRoute>
+      <Head>
+          <title>Wings - Login</title>
+      </Head>
       <Layout blank>
           <div className="header-blank">
             <div className='container'>
@@ -144,6 +156,10 @@ function Login() {
                                   onChange={(e) => setpass(e.target.value)}
                                 />
                               </div>
+
+                              <Link href={'/'} className="mb-3 text-secondary d-inline-flex link-unstyled">
+                                ¿Olvidaste tu contraseña?
+                              </Link>
                               
                               <div className=''>
                                 <button 
@@ -155,9 +171,18 @@ function Login() {
                                 </button>
                               </div>
 
-                              <Link href={'/'} className="mt-3 text-secondary d-inline-flex link-unstyled">
-                                ¿Olvidaste tu contraseña?
-                              </Link>
+                              {/* 
+                                <SocialBtn
+                                  provider="facebook"
+                                  appId={`${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`}
+                                  onLoginSuccess={handleSocialLogin}
+                                  onLoginFailure={handleSocialLoginFailure}
+                                >
+                                  Facebook
+                                </SocialBtn>
+                              */}
+
+                              
                             </div>
                         </div>
                       </div>
