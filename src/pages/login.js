@@ -3,7 +3,7 @@ import Layout from '@/components/app/Layout'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import axios from 'axios';
+import axios from '../lib/fetch';
 import { API_URL } from '@/config/config';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,6 +15,8 @@ import { addToken } from '@/lib/fetch';
 import { useRouter } from 'next/router';
 import SocialBtn from '@/components/auth/SocialBtn';
 import Head from 'next/head';
+
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
 function Login() {
   const auth = useAuth();
@@ -30,7 +32,7 @@ function Login() {
 
   const onLogin = async (e) => {
     e.preventDefault();
-    const url = `${API_URL}/auth/login/`
+    const url = `/auth/login/`
 
     let data = {
       correo_cliente: email, 
@@ -91,9 +93,48 @@ function Login() {
     }
   }, []);
 
-  const handleSocialLogin = (user) => {
-    console.log(user);
+  const handleSocialLoginByFacebook = (user) => {
+    const token = user._token.accessToken;
+    axios.post(`/auth/login/facebook/`, {
+      token: `${token}`
+    }).then((res) => {
+      const result = res.data;
+
+      if(result.result){
+        result.mesagge ? toast.success(result.mesagge) : toast.success(`Bienvenido ${result.client.nombre_cliente}!`);
+        addToken(result.token);
+        auth.setUser(result.token, result.client);
+      }else{
+        toast.error('Intente registrarse en wingstore para poder iniciar sesión');
+      }
+
+    }).catch((err) => {
+      console.error(err);
+    })
   };
+
+  const handleSocialLoginByGoogle = useGoogleLogin({
+    onSuccess: tokenResponse => {
+      console.log(tokenResponse);
+
+      axios.post(`/auth/login/google/`, {
+        token: `${tokenResponse.access_token}`
+      }).then((res) => {
+        const result = res.data;
+  
+        if(result.result){
+          result.mesagge ? toast.success(result.mesagge) : toast.success(`Bienvenido ${result.client.nombre_cliente}!`);
+          addToken(result.token);
+          auth.setUser(result.token, result.client);
+        }else{
+          toast.error('Intente registrarse en wingstore para poder iniciar sesión');
+        }
+  
+      }).catch((err) => {
+        console.error(err);
+      })
+    }
+  });
   
   const handleSocialLoginFailure = (err) => {
     console.error(err);
@@ -170,18 +211,31 @@ function Login() {
                                   {!sending ? 'Iniciar sesión' : <i className="fa-solid fa-spin fa-spinner"></i>}
                                 </button>
                               </div>
-
-                              {/* 
-                                <SocialBtn
-                                  provider="facebook"
-                                  appId={`${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`}
-                                  onLoginSuccess={handleSocialLogin}
-                                  onLoginFailure={handleSocialLoginFailure}
-                                >
-                                  Facebook
-                                </SocialBtn>
-                              */}
-
+                              
+                              <div className="row mt-3">
+                                <div className="col-lg-6">
+                                  <SocialBtn
+                                    provider="facebook"
+                                    appId={`${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`}
+                                    onLoginSuccess={handleSocialLoginByFacebook}
+                                    onLoginFailure={handleSocialLoginFailure}
+                                    className={`btn btn-lg w-100 btn-fcb`}
+                                  >
+                                    <i className="fa-brands fa-facebook-f me-3"></i>
+                                    Facebook
+                                  </SocialBtn>
+                                </div>
+                                <div className="col-lg-6">
+                                  <button 
+                                    onClick={() => handleSocialLoginByGoogle()} 
+                                    type='button'
+                                    className='btn btn-lg btn-g w-100'
+                                  >
+                                    <i className="fa-brands fa-google me-3"></i>
+                                    Google
+                                  </button>
+                                </div>
+                              </div>
                               
                             </div>
                         </div>

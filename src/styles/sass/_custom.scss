@@ -997,6 +997,7 @@ header{
     align-items: center;
     background-color: #fff;
     box-shadow: 0px 4px 5px rgba(#303030, .03);
+    border-top: 4px solid $secondary;
 }
 
 .link-unstyled{
@@ -1093,5 +1094,27 @@ header{
                 }
             }
         }
+    }
+}
+
+.btn-fcb{
+    background-color: #38509C;
+    color: #fff;
+
+    &:hover{
+        //color: #38509C;
+        background-color: #38509C;
+        color: #fff;
+    }
+}
+
+.btn-g{
+    background-color: #E5342C;
+    color: #fff;
+
+    &:hover{
+        //color: #38509C;
+        background-color: #E5342C;
+        color: #fff;
     }
 }

@@ -9,6 +9,7 @@ function SearchTop() {
     const app             = useSelector((state) => state.app, shallowEqual);
     const country         = app.selectedCountry;
 
+    const [search, setsearch] = useState(false);
     const [text, settext] = useState("");
     const [lista, setlista] = useState([]);
 
@@ -16,6 +17,8 @@ function SearchTop() {
         settext(val);
 
         if(val.length > 2){
+            setsearch(true);
+
             axios.get(`${API_URL}/products_search/${country.id}/${val}`)
             .then((res) => {
                 const results = res.data;
@@ -27,10 +30,16 @@ function SearchTop() {
                     setlista([]);
                 }
 
+                setsearch(false);
+
             }).catch((err) => {
                 console.log(err);
+                setsearch(false);
             });
+
         }else{
+
+            setsearch(false);
             setlista([]);
         }
     }
@@ -57,8 +66,17 @@ function SearchTop() {
                         onChange={(e) => searchByText(e.target.value)}
                     />
                     <div className="input-group-append">
-                        <button type="submit" className="btn border-0 bg-light text-secondary btn-outline-secondary">
-                            <i className="fa-solid fa-magnifying-glass" />
+                        <button 
+                            disabled={search} 
+                            type="submit" 
+                            className="btn border-0 bg-light text-secondary btn-outline-secondary"
+                        >
+                            {search 
+                            ? 
+                                <i class="fa-solid fa-spin fa-spinner"></i>
+                            : 
+                                <i className="fa-solid fa-magnifying-glass" />
+                            }
                         </button>
                     </div>
                 </div>

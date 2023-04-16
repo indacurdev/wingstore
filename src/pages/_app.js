@@ -18,6 +18,7 @@ import Router from "next/router";
 import NProgress from 'nprogress'
 import Loader from "@/components/Loader";
 import { AuthProvider } from "@/context/auth";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function MyApp({ Component, ...rest }) {
 
@@ -55,8 +56,10 @@ function MyApp({ Component, ...rest }) {
         loading={<Loader />}
       >
         <AuthProvider>
-          <ToastContainer />
-          <Component {...pageProps} />
+          <GoogleOAuthProvider clientId={`${process.env.NEXT_PUBLIC_GOOGLE_APP_ID}`}>
+            <ToastContainer />
+            <Component {...pageProps} />
+          </GoogleOAuthProvider>
         </AuthProvider>
       </PersistGate>
     </Provider>
