@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Head from 'next/head';
 import PrivateRoute from '@/components/auth/PrivateRoute';
 import Layout from '@/components/app/Layout';
@@ -6,11 +6,85 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Link from 'next/link';
 import axios from '../../lib/fetch'
 import AccountMenu from '@/components/AccountMenu';
+import { toast } from 'react-toastify';
 
 function Config(props) {
 
+    const [password, setpassword] = useState('');
+    const [newPassword, setnewPassword] = useState('');
+    const [confirmPassword, setconfirmPassword] = useState('');
+
+    const [sending, setsending] = useState(false);
+    const [errors, seterrors] = useState({});
+
     const data = props.data;
     console.log(`data sales`, data);
+
+    const changePassword = (e) => {
+        e.preventDefault();
+        let errors = {};
+        let countErrors = 0;
+        seterrors({});
+
+        if(password.trim() === ""){
+            errors.password = 'Ingrese su contraseña actual';
+            countErrors++;
+        }
+
+        if(newPassword.trim() === ""){
+            errors.newPassword = 'Debe ingresar su contraseña nueva';
+            countErrors++;
+        }
+
+        if(confirmPassword.trim() === ""){
+            errors.confirmPassword = 'Debe confirmar su contraseña';
+            countErrors++;
+        }else if(confirmPassword.trim() !== newPassword.trim()){
+            errors.confirmPassword = 'Las contraseñas deben ser iguales';
+            countErrors++;
+        }
+
+        if(countErrors > 0){
+            toast.error(`Verifique los datos del formulario`);
+            seterrors(errors);
+            window.scroll(0, (document.getElementById("cardConfig").offsetTop - 70));
+        }else{
+            setsending(true);
+
+            let data = {
+                password: password,
+                new_password: newPassword
+            }
+
+            const url = `/auth/reset_password`;
+
+            axios({
+                url,
+                method: 'post',
+                data
+            }).then((res) => {
+                const result = res.data;
+                console.log(result);
+
+                if(result.result){
+                    toast.success(result.message);
+                    setsending(false);
+                    setpassword(``);
+                    setnewPassword(``);
+                    setconfirmPassword(``);
+                    document.getElementById(`formChangePassword`).reset();
+                    window.scroll(0, (document.getElementById("cardConfig").offsetTop - 70));
+                }else{
+                    toast.error(result.message);
+                    window.scroll(0, (document.getElementById("cardConfig").offsetTop - 70));
+                    setsending(false);
+                }
+            }).catch((err) => {
+                console.error(err);
+                setsending(false);
+            });
+        }
+    }
     
     return (
         <PrivateRoute>
@@ -47,8 +121,77 @@ function Config(props) {
                                         Configuración
                                     </h1>
                                     
-                                    <div className="card border-0">
+                                    <div className="card border-0" id='cardConfig'>
                                         <div className="card-body">
+                                            <h4 className='fw-bold h5' id='changePassword'>
+                                                Cambiar contraseña
+                                            </h4>
+
+                                            <form id='formChangePassword' onSubmit={(e) => changePassword(e)} action="">
+                                                <div className="row">
+                                                    <div className={((errors[`password`]) ? "has-error" : "") + ` col-lg-12 py-2`}>
+                                                        <label htmlFor="password" className='mb-2'>
+                                                            Contraseña nueva
+                                                        </label>
+                                                        <input 
+                                                            type="password" 
+                                                            className='form-control'
+                                                            placeholder='****'
+                                                            id='password'
+                                                            onChange={(e) => setpassword(e.target.value)}
+                                                        />
+                                                        {errors[`password`] &&
+                                                            <div className='text-danger fw-bold small py-2 small'>
+                                                                {errors[`password`]}
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div className={((errors[`newPassword`]) ? "has-error" : "") + ` col-lg-6 py-2`}>
+                                                        <label htmlFor="newPass" className='mb-2'>
+                                                            Contraseña nueva
+                                                        </label>
+                                                        <input 
+                                                            type="password" 
+                                                            className='form-control'
+                                                            placeholder='****'
+                                                            id='newPass'
+                                                            onChange={(e) => setnewPassword(e.target.value)}
+                                                        />
+                                                        {errors[`newPassword`] &&
+                                                            <div className='text-danger fw-bold small py-2 small'>
+                                                                {errors[`newPassword`]}
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div className={((errors[`confirmPassword`]) ? "has-error" : "") + ` col-lg-6 py-2`}>
+                                                        <label htmlFor="repeatPass" className='mb-2'>
+                                                            Repetir contraseña
+                                                        </label>
+                                                        <input 
+                                                            type="password" 
+                                                            className='form-control'
+                                                            placeholder='****'
+                                                            id='repeatPass'
+                                                            onChange={(e) => setconfirmPassword(e.target.value)}
+                                                        />
+                                                        {errors[`confirmPassword`] &&
+                                                            <div className='text-danger fw-bold small py-2 small'>
+                                                                {errors[`confirmPassword`]}
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="text-end mt-2">
+                                                    <button 
+                                                        type='submit' 
+                                                        className='btn btn-primary fw-bold'
+                                                        disabled={sending}
+                                                    >
+                                                        {sending ? <i className="fa-solid fa-spin fa-spinner"></i> : `Cambiar contraseña`}
+                                                        
+                                                    </button>
+                                                </div>
+                                            </form>
                                             
                                         </div>
                                     </div>

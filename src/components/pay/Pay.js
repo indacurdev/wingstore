@@ -27,8 +27,8 @@ function Pay({cancel, product, data, method, plan}) {
   const [sending, setsending] = useState(false);
   const [errors, seterrors] = useState({});
 
-  const auth = session.auth;
-  const user = session.user;
+  const auth    = session.auth;
+  const user    = session.user;
   const country = app.selectedCountry;
 
   const [count, setcount] = useState(0);

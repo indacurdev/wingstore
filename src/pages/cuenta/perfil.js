@@ -94,9 +94,12 @@ function Perfil(props) {
                                                             </span>
                                                         </div>
                                                         <div className="col-lg-2 col-5 mb-2">
-                                                            <button className='btn fw-bold w-100 btn-secondary'>
+                                                            <Link 
+                                                                href={`/cuenta/configuracion`} 
+                                                                className='btn fw-bold w-100 btn-secondary'
+                                                            >
                                                                 Cambiar
-                                                            </button>
+                                                            </Link>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -108,9 +111,11 @@ function Perfil(props) {
                                         <div className="col-md-6">
                                             <div className="card border-0 bg-secondary mb-3">
                                                 <div className="card-body">
-                                                    <h2 className='h1 fb text-light mb-0'>
-                                                        <span className='text-success me-2'>25.00</span> 
-                                                        Wcoins
+                                                    <h2 className='h1 fb text-light mb-0 d-flex align-items-center justify-content-between'>
+                                                        <div>
+                                                            <span className='text-success me-2'>25.00</span> 
+                                                            <span>Wcoins</span>
+                                                        </div>
 
                                                         <OverlayTrigger
                                                             placement="top"
@@ -128,9 +133,11 @@ function Perfil(props) {
                                         <div className="col-md-6">
                                             <div className="card border-0 mb-3">
                                                 <div className="card-body">
-                                                    <h2 className='h1 fb text-secondary mb-0'>
-                                                        <span className='text-primary me-2'>15.50</span> 
-                                                        Wpoints
+                                                    <h2 className='h1 fb text-secondary mb-0 d-flex align-items-center justify-content-between'>
+                                                        <div>
+                                                            <span className='text-primary me-2'>15.50</span> 
+                                                            <span>Wpoints</span>
+                                                        </div>
                                                         <OverlayTrigger
                                                             placement="top"
                                                             delay={{ show: 250, hide: 400 }}
@@ -145,9 +152,9 @@ function Perfil(props) {
                                             </div>
 
                                             <div className="text-end">
-                                                <button className='btn btn-primary fw-bold'>
+                                                <Link href={`/cuenta/canjear-wpoints`} className='btn btn-primary fw-bold'>
                                                     Canjear wpoints
-                                                </button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

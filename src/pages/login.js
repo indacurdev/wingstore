@@ -6,7 +6,7 @@ import Link from 'next/link'
 import axios from '../lib/fetch';
 import { API_URL } from '@/config/config';
 import { useDispatch, useSelector } from 'react-redux';
-
+import dynamic from 'next/dynamic'
 import { toast } from 'react-toastify';
 import PublicRoute from '@/components/auth/PublicRoute';
 
@@ -17,6 +17,12 @@ import SocialBtn from '@/components/auth/SocialBtn';
 import Head from 'next/head';
 
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+const FacebookBtn = dynamic(
+  () => import('../components/auth/FacebookBtn'),
+  { ssr: false }
+)
+
+import Loader from '@/components/Loader';
 
 function Login() {
   const auth = useAuth();
@@ -26,6 +32,8 @@ function Login() {
   const [pass, setpass] = useState('');
   const [loading, setloading] = useState(true);
   const [sending, setsending] = useState('');
+
+  const [success, setsuccess] = useState(false);
 
   const dispatch = useDispatch();
   const session  = useSelector(state => state.session);
@@ -93,19 +101,20 @@ function Login() {
     }
   }, []);
 
-  const handleSocialLoginByFacebook = (user) => {
-    const token = user._token.accessToken;
+  const handleSocialLoginByFacebook = (token) => {
+    setsuccess(true);
     axios.post(`/auth/login/facebook/`, {
       token: `${token}`
     }).then((res) => {
       const result = res.data;
 
       if(result.result){
-        result.mesagge ? toast.success(result.mesagge) : toast.success(`Bienvenido ${result.client.nombre_cliente}!`);
+        result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
         addToken(result.token);
         auth.setUser(result.token, result.client);
       }else{
         toast.error('Intente registrarse en wingstore para poder iniciar sesión');
+        setsuccess(false);
       }
 
     }).catch((err) => {
@@ -115,19 +124,19 @@ function Login() {
 
   const handleSocialLoginByGoogle = useGoogleLogin({
     onSuccess: tokenResponse => {
-      console.log(tokenResponse);
-
+      setsuccess(true);
       axios.post(`/auth/login/google/`, {
         token: `${tokenResponse.access_token}`
       }).then((res) => {
         const result = res.data;
   
         if(result.result){
-          result.mesagge ? toast.success(result.mesagge) : toast.success(`Bienvenido ${result.client.nombre_cliente}!`);
+          result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
           addToken(result.token);
           auth.setUser(result.token, result.client);
         }else{
           toast.error('Intente registrarse en wingstore para poder iniciar sesión');
+          setsuccess(false);
         }
   
       }).catch((err) => {
@@ -163,6 +172,7 @@ function Login() {
               </div>
             </div>
           </div>
+          {success && <Loader />}
           <div className="content-login">
             <div className="content-form w-100">
               <div className="container">
@@ -174,9 +184,29 @@ function Login() {
                       Inicia sesión en <span className='text-primary'>Wings</span>
                     </h1>
 
+                    
+
                     <form action="" autoComplete="false" onSubmit={(e) => onLogin(e)}>
                       <div className="card mb-3 border-0 shadow">
                         <div className="card-body py-4 px-4">
+                            <div className="row mb-3">
+                              <div className="col-lg-6 col-5">
+                                <FacebookBtn
+                                  handleLogin={(token) => handleSocialLoginByFacebook(token)}
+                                />
+                              </div>
+                              <div className="col-lg-6 col-5">
+                                <button 
+                                  onClick={() => handleSocialLoginByGoogle()} 
+                                  type='button'
+                                  className='btn btn-lg btn-g w-100'
+                                >
+                                  <i className="fa-brands fa-google me-3"></i>
+                                  Google
+                                </button>
+                              </div>
+                            </div>
+                            
                             <div className="content-input">
                               <div className="form-group mb-3">
                                 <input 
@@ -210,31 +240,6 @@ function Login() {
                                 >
                                   {!sending ? 'Iniciar sesión' : <i className="fa-solid fa-spin fa-spinner"></i>}
                                 </button>
-                              </div>
-                              
-                              <div className="row mt-3">
-                                <div className="col-lg-6">
-                                  <SocialBtn
-                                    provider="facebook"
-                                    appId={`${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}`}
-                                    onLoginSuccess={handleSocialLoginByFacebook}
-                                    onLoginFailure={handleSocialLoginFailure}
-                                    className={`btn btn-lg w-100 btn-fcb`}
-                                  >
-                                    <i className="fa-brands fa-facebook-f me-3"></i>
-                                    Facebook
-                                  </SocialBtn>
-                                </div>
-                                <div className="col-lg-6">
-                                  <button 
-                                    onClick={() => handleSocialLoginByGoogle()} 
-                                    type='button'
-                                    className='btn btn-lg btn-g w-100'
-                                  >
-                                    <i className="fa-brands fa-google me-3"></i>
-                                    Google
-                                  </button>
-                                </div>
                               </div>
                               
                             </div>

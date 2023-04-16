@@ -51,7 +51,34 @@ function History(props) {
                                         <div className="card-body">
                                             {data.length > 0 
                                             ?
-                                                <div></div>
+                                                <div className='table-responsive'>
+                                                    <table className='table table-hover table-striped'>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Producto</th>
+                                                                <th className='text-center'>Plan</th>
+                                                                <th className='text-center'>Método de pago</th>
+                                                                <th className='text-center'>Total (USD $)</th>
+                                                                <th className='text-end'>Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {data.map((item, key) => {
+                                                                return (
+                                                                    <tr key={key}>
+                                                                        <td>{item.nombre}</td>
+                                                                        <td className='text-center'>{item.puntos_plan}</td>
+                                                                        <td className='text-center'>{item.nombre_mtp}</td>
+                                                                        <td className='text-center'>{item.total_usd}$</td>
+                                                                        <td className={(item.status === 'pagada' ? `text-success` : ``) + ` text-end`}>
+                                                                            {item.status}
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             :
                                                 <div className='alert alert-info'>
                                                     Todavia no ha realizado ninguna compra en 
