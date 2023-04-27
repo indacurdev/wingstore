@@ -7,7 +7,7 @@ function AppPageRenderer(props) {
     const appState = useSelector(state => state.app);
 
     // console.log('-----');
-    console.log(props);
+    // console.log(props);
     // console.log(appState);
 
     const setInitialConfig = async () => {

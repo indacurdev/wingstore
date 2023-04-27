@@ -14,16 +14,19 @@ import { toast } from 'react-toastify';
 
 import { useSelector } from 'react-redux';
 import Pay from '@/components/pay/Pay';
+import { wrapper } from '@/store/store';
 
 function ViewProduct(props) {
+
+    console.log(props);
 
     const labels = false;
 
     const product   = props.data.product;
     const template  = props.data.template;
     const plans     = props.data.plans;
+    const methods  = props.payment_methods;
 
-    const methods  = useSelector((state) => state.app.paymentMethods);
     // const [plans, setplans] = useState([]);
 
     const [selectedPlan, setselectedPlan]   = useState(null);
@@ -147,6 +150,13 @@ function ViewProduct(props) {
         }
     }
 
+    const changePlan = (item) => {
+        setselectedPlan(item);
+        setselectedPaymentMethod(null);
+    }
+
+    console.log(selectedPlan);
+
     return (
         <>
             <Head>
@@ -242,7 +252,11 @@ function ViewProduct(props) {
                                                                 {plans.length > 0 && plans.map((item, key) => {
                                                                     return(
                                                                         <div className='col-lg-4 col-6 py-2' key={key}>
-                                                                            <button type='button' onClick={() => setselectedPlan((item === selectedPlan) ? null : item)} className={((selectedPlan === item) ? 'active' : '') + ` plan fb`}>
+                                                                            <button 
+                                                                                type='button' 
+                                                                                onClick={() => changePlan((item === selectedPlan) ? null : item)} 
+                                                                                className={((selectedPlan === item) ? 'active' : '') + ` plan fb`}
+                                                                            >
                                                                                 <span className="overlay-plan"></span>
                                                                                 {item.puntos_plan}
                                                                             </button>
@@ -264,13 +278,31 @@ function ViewProduct(props) {
                                                         <div className="card-body py-4">
                                                             <div className="row payment-methods">
                                                                 {methods.length > 0 && methods.map((item, key) => {
-                                                                    return(
-                                                                        <div className='col-lg-4 col-6 py-2' key={key}>
-                                                                            <button type="button" onClick={() => setselectedPaymentMethod((item === selectedPaymentMethod) ? null : item)} className={((selectedPaymentMethod === item) ? 'active' : '') + ''} >
-                                                                                {item.nombre_mtp}
-                                                                            </button>
-                                                                        </div>
-                                                                    )
+                                                                    
+                                                                    let precioPlan  = selectedPlan ? Number(selectedPlan.precio_plan) : null;
+                                                                    let maxPrice    = item.costo_maximo ? Number(item.costo_maximo) : null; 
+                                                                    let minPrice    = item.costo_minimo ? Number(item.costo_minimo) : null; 
+                                                                    let isDisabled  = false;
+
+                                                                    if(precioPlan){
+                                                                        if(minPrice && precioPlan < minPrice){
+                                                                            isDisabled = true;
+                                                                        }
+
+                                                                        if(maxPrice && precioPlan > maxPrice){
+                                                                            isDisabled = true;
+                                                                        }
+                                                                    }
+                                                                    
+                                                                    if(!isDisabled){
+                                                                        return(
+                                                                            <div className='col-lg-4 col-6 py-2' key={key}>
+                                                                                <button type="button" onClick={() => setselectedPaymentMethod((item === selectedPaymentMethod) ? null : item)} className={((selectedPaymentMethod === item) ? 'active' : '') + ''} >
+                                                                                    {item.nombre_mtp}
+                                                                                </button>
+                                                                            </div>
+                                                                        )
+                                                                    }
                                                                 })}
                                                             </div>
                                                         </div>
@@ -347,14 +379,26 @@ function ViewProduct(props) {
         />
 */}
 
-ViewProduct.getInitialProps = async ({ query }) => {
-    const { slug } = query;
-    const product = await axios.get(`${API_URL}/product/${slug}`);
+ViewProduct.getInitialProps = wrapper.getInitialPageProps((store) => async ({ req, query }) => {
+    const state         = store.getState();
+    const pais          = state.app.selectedCountry.id;
+
+    console.log('STATE', state);
+    console.log('QUERY', query);
+
+    const { slug }      = query;
+
+    const product       = await axios.get(`${API_URL}/product/${slug}`);
+    const idProduct     = product.data.product.id_producto;
+
+    const methods       = await axios.get(`${API_URL}/methods/${pais}/${idProduct}`);
 
     return {
         slug,
-        data: product.data
+        data:   product.data,
+        id:     idProduct,
+        payment_methods: methods.data
     }
-}
+});
 
 export default ViewProduct

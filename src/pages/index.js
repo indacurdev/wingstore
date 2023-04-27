@@ -23,7 +23,7 @@ function Home(props) {
   // const banners  = useSelector((state) => state.app.banners);
   const banners = [];
 
-  console.log(banners);
+  // console.log(banners);
 
   const auth = useAuth();
 

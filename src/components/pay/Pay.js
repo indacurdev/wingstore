@@ -30,6 +30,7 @@ function Pay({cancel, product, data, method, plan}) {
   const auth    = session.auth;
   const user    = session.user;
   const country = app.selectedCountry;
+  const tasa    = country.valor_tasa;
 
   const [count, setcount] = useState(0);
   const [success, setsuccess] = useState(false);
@@ -133,7 +134,7 @@ function Pay({cancel, product, data, method, plan}) {
             ...data
           },
           pay: {
-            ...payData, 
+
             date: moment(date).format('YYYY-MM-DD')
           },
           country
@@ -178,6 +179,69 @@ function Pay({cancel, product, data, method, plan}) {
     }
   }
 
+  const sendAutomaticOrder = () => {
+    console.log('Enviando pago automatico');
+    if(method.tipo_pasarela === 'automatico'){
+      let dataToSend = {
+        order: {
+          type:                 method.tipo_pasarela,
+          payment_method_id:    method.id_mtp,
+          payment_method_name:  method.nombre_mtp,
+          plan:                 plan,
+          total:                total          
+        },
+        gameinfo: {
+          ...data
+        },
+        pay: {
+          ...payData, 
+          date: moment(date).format('YYYY-MM-DD')
+        },
+        country
+      }
+
+      //print data
+      console.log('PAY', dataToSend);
+
+      setsending(true);
+      const url = `${API_URL}/save_sale/`;
+
+      axios({
+        method: "post",
+        url,
+        data: dataToSend
+      }).then((res) => {
+
+        let result = res.data;
+        console.log(res.data);
+
+        if(result.sucess){
+          toast.success(result.message);
+          setsuccess(true);
+          window.scroll(0, (document.getElementById("paymentContainer").offsetTop - 70));
+          router.push('/cuenta/historial-de-compras');
+        }
+        
+        setsending(false);
+
+      }).catch((err) => {
+
+        let res = err.response;
+        if(res.data){
+          let res = err.response.data;
+          console.error(res);
+          toast.error('Ha ocurrido un error al hacer la compra');
+          setsending(false);
+        }
+  
+      });
+    }
+  }
+  
+  console.log("CODIGO MONEDA", country.codigo_moneda);
+  
+  const formatter = new Intl.NumberFormat(`es-VE`);
+  
   return (
     <div id='paymentContainer'>
       {!success ?
@@ -255,6 +319,14 @@ function Pay({cancel, product, data, method, plan}) {
                                 </span> 
                                 <span className='ms-2 text-primary'>
                                   USD ${total}
+                                </span>
+                              </h5>
+                              <h5 className='fw-bold'>
+                                <span className='fw-bold'>
+                                  Total {`(${country.codigo_iso})`}:
+                                </span> 
+                                <span className='ms-2 text-primary'>
+                                  {formatter.format(Number(total * tasa))}
                                 </span>
                               </h5>
                             </div>
@@ -472,7 +544,10 @@ function Pay({cancel, product, data, method, plan}) {
 
                                 {method.nombre_mtp.toLowerCase() === 'paypal' &&
                                   <div className='content-paypal-btn'>
-                                    <PaypalBtn />
+                                    <PaypalBtn 
+                                      amount={Number(total)} 
+                                      onComplete={() => sendAutomaticOrder()} 
+                                    />
                                     <div className="text-end pt-3">
                                       <button 
                                         disabled={sending}
@@ -489,7 +564,11 @@ function Pay({cancel, product, data, method, plan}) {
                                 {method.nombre_mtp.toLowerCase() === 'stripe tdc' &&
                                   <div>
                                     <ContentStripeForm>
-                                      <StripeForm cancel={() => cancel()}  />
+                                      <StripeForm 
+                                        amount={Number(total)} 
+                                        cancel={() => cancel()}  
+                                        onComplete={() => sendAutomaticOrder()}
+                                      />
                                     </ContentStripeForm>
                                   </div>
                                 }

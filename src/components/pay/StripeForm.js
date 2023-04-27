@@ -5,12 +5,12 @@ import {loadStripe} from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_KEY_PUBLIC}`);
 
-function StripeForm({ cancel }) {
+function StripeForm({ cancel, amount, onComplete }) {
 
     const createPayment = async (e) => {
         e.preventDefault();
 
-        let amountData = 50;
+        let amountData = amount;
 
         const res = await fetch('/api/payments/stripe', {
             method: 'post',
@@ -41,8 +41,11 @@ function StripeForm({ cancel }) {
                 }
             });
 
-            console.log(result);
-            console.log(token);
+            // console.log(result.paymentIntent.status);
+            // console.log(token);
+            if(result.paymentIntent.status){
+                onComplete(result.paymentIntent.id);
+            }
         }
 
     } 

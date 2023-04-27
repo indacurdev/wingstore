@@ -5,9 +5,7 @@ import axios from 'axios';
 const clientId          = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 // const clientSecret   = process.env.PAYPAL_CLIENT_SECRET;
 
-function PaypalBtn() {
-    // console.log(clientId);
-
+function PaypalBtn(props) {
     return (
         <div>
             <PayPalScriptProvider options={{ "client-id": clientId }}>
@@ -18,6 +16,9 @@ function PaypalBtn() {
                             const res = await axios({
                                 url:    '/api/payments/paypal',
                                 method: 'POST',
+                                data: {
+                                    amount: props.amount
+                                },
                                 headers: {
                                     "Content-Type": "application/json"
                                 },
@@ -33,8 +34,11 @@ function PaypalBtn() {
                     }}
                     onCancel={(data) => console.log('compra cancelada')}
                     onApprove={(data, actions) => {
-                        console.log(data);
+                        //console.log(data);
+                        console.log('pago realizado exitosamente');
                         actions.order.capture();
+                        props.onComplete(data);
+
                     }}
                     style={{ layout: "horizontal" }} 
                 />

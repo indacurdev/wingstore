@@ -38,8 +38,8 @@ export const loadInitialFunctions = async (store, req) => {
         }
 
         if(initialstate.app.paymentMethods.length === 0){
-            const methods = await axios.get(`/methods/${defaultCountry.id}`);
-            await store.dispatch(setPaymentMethods(methods.data));
+            // const methods = await axios.get(`/methods/${defaultCountry.id}`);
+            // await store.dispatch(setPaymentMethods(methods.data));
         }
     
         if(initialstate.app.banners.length === 0){

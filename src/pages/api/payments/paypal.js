@@ -7,6 +7,8 @@ export default async function handler(req, res) {
     if(req.method === 'POST'){
         const request = new paypal.orders.OrdersCreateRequest();
         request.headers['prefer'] = 'return=representation';
+        const body = req.body;
+        console.log('PAYPAL BODY', body);
 
         request.requestBody({
             intent: 'CAPTURE',
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
                 {
                     amount: {
                         currency_code: 'USD',
-                        value: '100.00',
+                        value: `${body.amount}`,
                     },
                 },
             ],

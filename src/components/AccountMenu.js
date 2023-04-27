@@ -30,7 +30,7 @@ function AccountMenu() {
     const router = useRouter();
     const path   = router.pathname;
 
-    console.log('pathname', path);
+    // console.log('pathname', path);
 
     return (
         <div className='accountMenu'>

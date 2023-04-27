@@ -33,19 +33,26 @@ function UserDropdown() {
                     </div>
                     <div className="d-none">
                         <i className="fa-regular fa-user text-primary" />
-                        <span className="ms-2">
-                            {user.nombre_cliente}
+                            <span className="ms-2">
+                            {(user.nombre_cliente && user.nombre_cliente !== "") ? user.nombre_cliente : user.correo_cliente}
                         </span>
                     </div>
                 </Dropdown.Toggle>
                 <Dropdown.Menu align="end" className='menu-user-top'>
                 <div className="px-3 py-2">
+                    
                     <p className="mb-1 h4 fw-bold text-center text-secondary">
-                        {user.nombre_cliente}
+                        {(user.nombre_cliente && user.nombre_cliente !== "") ? user.nombre_cliente : user.correo_cliente}
                     </p>
-                    <p className="mb-4 h6 text-center text-muted">
-                        {user.correo_cliente}
-                    </p>
+
+                    {user.nombre_cliente && user.nombre_cliente === "" ?
+                        <p className="mb-4 h6 text-center text-muted">
+                            {user.correo_cliente}
+                        </p>
+                        :
+                        <div className='mb-3'></div>
+                    }
+
                     <Link href={`/cuenta/perfil`} className="btn btn-primary fw-bold w-100 mb-3">
                         <i className="fa-regular fa-user text-secondary me-2" />
                         Ver perfil 

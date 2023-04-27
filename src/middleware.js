@@ -18,13 +18,13 @@ export async function middleware(request) {
             // si existe el token
             const secret    = new TextEncoder().encode(process.env.JWT_SECRET);
             const {payload} = await jwtVerify(token.value, secret);
-            console.log('DATA TOKEN', payload);
+            //console.log('DATA TOKEN', payload);
 
             //si es valido
             return NextResponse.next();
 
         } catch (error) {
-            console.log('ERROR AL COMPROBAR EL TOKEN');
+            //console.log('ERROR AL COMPROBAR EL TOKEN');
             console.error(error); 
 
             await request.cookies.delete('wtoken');
@@ -33,7 +33,7 @@ export async function middleware(request) {
             const response = NextResponse.next();
             const responseCookies = await response.cookies.getAll();
 
-            console.log('res', responseCookies);
+            //console.log('res', responseCookies);
             
             return NextResponse.redirect(new URL('/logout?error=exp', request.url));
         }

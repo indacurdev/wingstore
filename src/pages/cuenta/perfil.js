@@ -72,7 +72,7 @@ function Perfil(props) {
                                                         Nombre
                                                     </label>
                                                     <span className='text-readonly'>
-                                                        {data.nombre_cliente}
+                                                        {data.user.nombre_cliente && data.user.nombre_cliente !== "" ? data.user.nombre_cliente : "-"}
                                                     </span>
                                                 </div>
                                                 <div className="col-lg-6 mb-3">
@@ -80,7 +80,7 @@ function Perfil(props) {
                                                         Email
                                                     </label>
                                                     <span className='text-readonly'>
-                                                        {data.correo_cliente}
+                                                        {data.user.correo_cliente}
                                                     </span>
                                                 </div>
                                                 <div className="col-lg-12">

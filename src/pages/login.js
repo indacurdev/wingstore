@@ -102,6 +102,7 @@ function Login() {
   }, []);
 
   const handleSocialLoginByFacebook = (token) => {
+    //console.log(token);
     setsuccess(true);
     axios.post(`/auth/login/facebook/`, {
       token: `${token}`
@@ -124,6 +125,7 @@ function Login() {
 
   const handleSocialLoginByGoogle = useGoogleLogin({
     onSuccess: tokenResponse => {
+      console.log(tokenResponse);
       setsuccess(true);
       axios.post(`/auth/login/google/`, {
         token: `${tokenResponse.access_token}`
@@ -180,7 +182,7 @@ function Login() {
                 <div className="row justify-content-center align-items-center">
                   <div className="col-lg-6">
 
-                    <h1 className='fw-bold text-secondary text-center mb-3'>
+                    <h1 className='fw-bold text-secondary text-center mb-3 mt-4'>
                       Inicia sesión en <span className='text-primary'>Wings</span>
                     </h1>
 
@@ -191,11 +193,6 @@ function Login() {
                         <div className="card-body py-4 px-4">
                             <div className="row mb-3">
                               <div className="col-lg-6 col-5">
-                                <FacebookBtn
-                                  handleLogin={(token) => handleSocialLoginByFacebook(token)}
-                                />
-                              </div>
-                              <div className="col-lg-6 col-5">
                                 <button 
                                   onClick={() => handleSocialLoginByGoogle()} 
                                   type='button'
@@ -204,6 +201,11 @@ function Login() {
                                   <i className="fa-brands fa-google me-3"></i>
                                   Google
                                 </button>
+                              </div>
+                              <div className="col-lg-6 col-5">
+                                <FacebookBtn
+                                  handleLogin={(token) => handleSocialLoginByFacebook(token)}
+                                />
                               </div>
                             </div>
                             
@@ -228,7 +230,7 @@ function Login() {
                                 />
                               </div>
 
-                              <Link href={'/'} className="mb-3 text-secondary d-inline-flex link-unstyled">
+                              <Link href={'/recuperar-contrasena'} className="mb-3 text-secondary d-inline-flex link-unstyled">
                                 ¿Olvidaste tu contraseña?
                               </Link>
                               
@@ -246,6 +248,13 @@ function Login() {
                         </div>
                       </div>
                     </form>
+
+                    <p className='text-left justify-content-center d-flex align-items-center'>
+                      ¿Aún no posees una cuenta?
+                      <Link href={'/register'} className="ms-3 btn btn-sm text-secondary fw-bold">
+                        registrate
+                      </Link>
+                    </p>
 
                     <p className='text-left justify-content-center d-flex align-items-center'>
                       ó
