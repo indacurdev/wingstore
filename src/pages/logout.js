@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Loader from '@/components/Loader'
 import { useAuth } from '@/context/auth';
 
-function logout() {
+function Logout() {
     const auth = useAuth();
     const router = useRouter();
 
@@ -26,4 +26,4 @@ function logout() {
     );
 }
 
-export default logout
+export default Logout
