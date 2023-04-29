@@ -134,7 +134,7 @@ function Pay({cancel, product, data, method, plan}) {
             ...data
           },
           pay: {
-
+            ...payData,
             date: moment(date).format('YYYY-MM-DD')
           },
           country
