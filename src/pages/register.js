@@ -94,7 +94,7 @@ function Register() {
     const handleSocialLoginByFacebook = (token) => {
         //console.log(token);
         setsuccess(true);
-        axios.post(`/auth/login/facebook/`, {
+        axios.post(`/auth/login/facebook`, {
         token: `${token}`
         }).then((res) => {
         const result = res.data;
@@ -117,7 +117,7 @@ function Register() {
         onSuccess: tokenResponse => {
         console.log(tokenResponse);
         setsuccess(true);
-        axios.post(`/auth/login/google/`, {
+        axios.post(`/auth/login/google`, {
             token: `${tokenResponse.access_token}`
         }).then((res) => {
             const result = res.data;
