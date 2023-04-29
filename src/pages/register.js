@@ -177,19 +177,19 @@ function Register() {
                             <div className="card-body py-4 px-4">
                                 {/* Social auth */}
                                 <div className="row mb-3">
-                                    <div className="col-lg-6 col-5">
+                                    <div className="col-sm-6 col-6">
                                         <button 
-                                            onClick={() => handleSocialLoginByGoogle()} 
-                                            type='button'
-                                            className='btn btn-lg btn-g w-100'
+                                        onClick={() => handleSocialLoginByGoogle()} 
+                                        type='button'
+                                        className='btn btn-lg btn-g w-100'
                                         >
-                                            <i className="fa-brands fa-google me-3"></i>
-                                            Google
+                                        <i className="fa-brands fa-google me-sm-3 me-2"></i>
+                                        Google
                                         </button>
                                     </div>
-                                    <div className="col-lg-6 col-5">
+                                    <div className="col-sm-6 col-6">
                                         <FacebookBtn
-                                            handleLogin={(token) => handleSocialLoginByFacebook(token)}
+                                        handleLogin={(token) => handleSocialLoginByFacebook(token)}
                                         />
                                     </div>
                                 </div>

@@ -253,6 +253,9 @@ header{
     }
 
     .dropdown-countries{
+        display: inline-flex;
+        align-items: center;
+
         .dropdown-menu{
             // width: 270px;
             border: none;
@@ -266,6 +269,8 @@ header{
         .dropdown-toggle{
             display: flex;
             align-items: center;
+            min-height: 40px;
+            min-width: 75px;
 
             &::after{
                 display: inline-flex;

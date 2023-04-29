@@ -20,7 +20,7 @@ function FacebookBtn(props) {
             }}
             >
             <button type='button' className='btn btn-lg btn-fcb w-100'>
-                <i className="fa-brands fa-facebook-f me-3"></i>
+                <i className="fa-brands fa-facebook-f me-sm-3 me-2"></i>
                 Facebook
             </button>
         </LoginSocialFacebook>
