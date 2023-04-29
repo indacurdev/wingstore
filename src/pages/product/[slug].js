@@ -46,6 +46,9 @@ function ViewProduct(props) {
 
     let inputs = '';
 
+    const session         = useSelector((state) => state.session);
+    const user              = session.user;
+
     useEffect(() => {
 
         /*
@@ -290,6 +293,12 @@ function ViewProduct(props) {
                                                                         }
 
                                                                         if(maxPrice && precioPlan > maxPrice){
+                                                                            isDisabled = true;
+                                                                        }
+                                                                    }
+
+                                                                    if(item.nombre_mtp.toLowerCase() === 'wcoins'){
+                                                                        if(Number(user.wingscoins) < precioPlan){
                                                                             isDisabled = true;
                                                                         }
                                                                     }

@@ -113,7 +113,9 @@ function Perfil(props) {
                                                 <div className="card-body">
                                                     <h2 className='h1 fb text-light mb-0 d-flex align-items-center justify-content-between'>
                                                         <div>
-                                                            <span className='text-success me-2'>25.00</span> 
+                                                            <span className='text-success me-2'>
+                                                                {Number(data.user.puntos_cliente).toFixed(2)}
+                                                            </span> 
                                                             <span>Wcoins</span>
                                                         </div>
 
@@ -123,7 +125,7 @@ function Perfil(props) {
                                                             overlay={wcoinsTooltip}
                                                         >
                                                             <span className='h5 ms-2'>
-                                                                <i class="fa-solid fa-circle-info"></i>
+                                                                <i className="fa-solid fa-circle-info"></i>
                                                             </span>
                                                         </OverlayTrigger>
                                                     </h2>
@@ -135,7 +137,9 @@ function Perfil(props) {
                                                 <div className="card-body">
                                                     <h2 className='h1 fb text-secondary mb-0 d-flex align-items-center justify-content-between'>
                                                         <div>
-                                                            <span className='text-primary me-2'>15.50</span> 
+                                                            <span className='text-primary me-2'>
+                                                                {Number(data.user.wingscoins).toFixed(2)}
+                                                            </span> 
                                                             <span>Wpoints</span>
                                                         </div>
                                                         <OverlayTrigger
@@ -144,7 +148,7 @@ function Perfil(props) {
                                                             overlay={wpTooltip}
                                                         >
                                                             <span className='h5 ms-2'>
-                                                                <i class="fa-solid fa-circle-info"></i>
+                                                                <i className="fa-solid fa-circle-info"></i>
                                                             </span>
                                                         </OverlayTrigger>
                                                     </h2>
@@ -155,17 +159,6 @@ function Perfil(props) {
                                                 <Link href={`/cuenta/canjear-wpoints`} className='btn btn-primary fw-bold'>
                                                     Canjear wpoints
                                                 </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='d-none'>
-                                        <h2 className='fw-bold h5 mb-3'>
-                                            Historial de compras
-                                        </h2>
-                                        <div className="card border-0">
-                                            <div className="card-body">
-                                                
                                             </div>
                                         </div>
                                     </div>

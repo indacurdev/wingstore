@@ -19,6 +19,9 @@ export const sessionSlice = createSlice({
         logout(state, action) {
             state.auth = false;
             state.user = null;
+        },
+        updateUser(state, action) {
+            state.user = action.payload;
         }
     },
     extraReducers: {
@@ -31,7 +34,7 @@ export const sessionSlice = createSlice({
     }
 });
 
-export const { setAuth, logout } = sessionSlice.actions;
+export const { setAuth, logout, updateUser } = sessionSlice.actions;
 export const selectAuthState = (state) => state.session.auth;
 
 export default sessionSlice.reducer;

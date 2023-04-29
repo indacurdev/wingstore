@@ -57,7 +57,7 @@ function UserDropdown() {
                         <i className="fa-regular fa-user text-secondary me-2" />
                         Ver perfil 
                     </Link>
-                    <Link href={`/`} className="btn-outline-secondary mb-3 w-100 fw-bold px-3 btn me-3">
+                    <Link href={`/cuenta/canjear-wpoints`} className="btn-outline-secondary mb-3 w-100 fw-bold px-3 btn me-3">
                         <i className="fa-solid fa-bag-shopping me-2" />
                         Comprar wcoins 
                     </Link>
@@ -69,7 +69,7 @@ function UserDropdown() {
                                 <span>Wpoints</span>
                             </div>
                             <div className="fw-bold text-secondary">
-                                <span>{user.puntos_cliente}</span>
+                                <span>{Number(user.puntos_cliente).toFixed(2)}</span>
                             </div>
                             </div>
                         </li>
@@ -80,7 +80,7 @@ function UserDropdown() {
                                 <span>Wcoins</span>
                             </div>
                             <div className="fw-bold text-secondary">
-                                <span>60.00</span>
+                                <span>{Number(user.wingscoins).toFixed(2)}</span>
                             </div>
                             </div>
                         </li>
