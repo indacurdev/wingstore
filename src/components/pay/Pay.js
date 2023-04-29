@@ -144,7 +144,7 @@ function Pay({cancel, product, data, method, plan}) {
         console.log('PAY', dataToSend);
 
         setsending(true);
-        const url = `${API_URL}/save_sale/`;
+        const url = `${API_URL}/save_sale`;
 
         axios({
           method: "post",
@@ -204,7 +204,7 @@ function Pay({cancel, product, data, method, plan}) {
       console.log('PAY', dataToSend);
 
       setsending(true);
-      const url = `${API_URL}/save_sale/`;
+      const url = `${API_URL}/save_sale`;
 
       axios({
         method: "post",
