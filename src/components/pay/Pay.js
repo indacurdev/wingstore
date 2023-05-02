@@ -11,13 +11,14 @@ import PaypalBtn from './PaypalBtn';
 import StripeForm, { ContentStripeForm } from './StripeForm';
 import { useRouter } from 'next/router';
 
-function Pay({cancel, product, data, method, plan}) {
+function Pay({cancel, product, data, method, plan, accounts}) {
   
   // console.log('PAYMENT ========');
   // console.log(product);
   // console.log(data);
   // console.log('metodo', method);
   // console.log('plan', plan);
+  console.log('Accounts', accounts);
 
   const router          = useRouter();
   const session         = useSelector((state) => state.session, shallowEqual);
@@ -36,7 +37,7 @@ function Pay({cancel, product, data, method, plan}) {
   const [success, setsuccess] = useState(false);
 
   const [payData, setpayData] = useState({
-    nombre:     auth ? user.nombre_cliente : "",
+    nombre:     auth ? user.nombre_cliente && user.nombre_cliente !== "" : "",
     email:      auth ? user.correo_cliente : "",
     pagoMovil:  "",
     ref:        "",
@@ -81,8 +82,9 @@ function Pay({cancel, product, data, method, plan}) {
       seterrors({});
 
       const {nombre, email, pagoMovil, ref, amount} = payData;
+      console.log(nombre);
 
-      if(nombre === "" || nombre.trim().length === 0){
+      if(!nombre || (nombre && (nombre === "" || nombre.trim().length === 0))){
         errorsCount++;
         errorsData['nombre'] = "Debe ingresar el nombre de comprador";
       }
@@ -240,7 +242,7 @@ function Pay({cancel, product, data, method, plan}) {
   
   console.log("CODIGO MONEDA", country.codigo_moneda);
   
-  const formatter = new Intl.NumberFormat(`es-VE`);
+  const formatter = new Intl.NumberFormat(`es-VE`, { style: 'currency', currency: 'VES' });
   
   return (
     <div id='paymentContainer'>
@@ -322,11 +324,68 @@ function Pay({cancel, product, data, method, plan}) {
                               Total {`(${country.codigo_iso})`}:
                             </span> 
                             <span className='ms-2 text-primary'>
-                              {formatter.format(Number(total * tasa))}
+                              {Number(total * tasa)}
                             </span>
                           </h5>
                         </div>
                       </div>
+                      {accounts && Array.isArray(accounts) && accounts.length > 0 &&
+                        <div className="card my-3">
+                          <div className="card-header py-3 bg-primary border-primary">
+                            <h3 className='h2 text-secondary fb mb-0'>
+                              Cuentas
+                            </h3>
+                          </div>
+                          <div className="card-body">
+                            {Array.isArray(accounts) && accounts.length > 0 &&
+                              <div>
+                                {accounts.map((item, key) => {
+                                  return (
+                                    <div key={key}>
+                                      
+                                      <div className="row">
+                                        <div className="col-lg-6 mb-3">
+                                          <label htmlFor="" className='mb-2'>
+                                            Titular:
+                                          </label>
+                                          <span className='text-readonly'>
+                                            {item.nombre_titular}
+                                          </span>
+                                        </div>
+                                        <div className="col-lg-6 mb-3">
+                                          <label htmlFor="" className='mb-2'>
+                                            Numero de identidad:
+                                          </label>
+                                          <span className='text-readonly'>
+                                            {item.cedula_identidad}
+                                          </span>
+                                        </div>
+                                        <div className="col-lg-6 mb-3">
+                                          <label htmlFor="" className='mb-2'>
+                                            Número cuenta:
+                                          </label>
+                                          <span className='text-readonly'>
+                                            {item.numero_cuenta}
+                                          </span>
+                                        </div>
+                                        <div className="col-lg-6 mb-3">
+                                          <label htmlFor="" className='mb-2'>
+                                            Teléfono:
+                                          </label>
+                                          <span className='text-readonly'>
+                                            {item.telefono}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
                     </div>
 
                     {/* MANUAL ----------------------- */}
@@ -348,7 +407,7 @@ function Pay({cancel, product, data, method, plan}) {
                                       Nombre <span className='text-danger ms-1'>*</span>
                                     </label>
                                     <div>
-                                      {!auth 
+                                      {!auth || (auth && (!user.nombre_cliente || user.nombre_cliente === ""))
                                       ?
                                         <input 
                                           type="text" 
@@ -521,7 +580,7 @@ function Pay({cancel, product, data, method, plan}) {
                                       type='submit' 
                                       className='btn btn-primary btn-lg fw-bold'
                                     >
-                                      Completar orden
+                                      {!sending ? <span className='px-5'>Completar orden</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
                                     </button>
                                   </div>
                                 </div>
@@ -559,7 +618,7 @@ function Pay({cancel, product, data, method, plan}) {
                                     onClick={() => sendAutomaticOrder()} 
                                     className='btn btn-primary me-2 btn-lg fw-bold'
                                   >
-                                    Pagar con wcoins
+                                    {!sending ? <span className='px-5'>Pagar con wcoins</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
                                   </button>
                                   <button 
                                     disabled={sending}

@@ -25,8 +25,11 @@ const FacebookBtn = dynamic(
 import Loader from '@/components/Loader';
 
 function Login() {
-  const auth = useAuth();
-  const router = useRouter();
+  const auth    = useAuth();
+  const router  = useRouter();
+  const query   = router.query;
+
+  console.log('QUERY', query);
 
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
@@ -37,6 +40,23 @@ function Login() {
 
   const dispatch = useDispatch();
   const session  = useSelector(state => state.session);
+
+  useEffect(() => {
+    const {msg} = router.query;
+
+    if(loading) {
+      if(msg){
+        if(msg === 'tkn'){
+          toast.info('Debe iniciar sesión para ver esta sección');
+        }else if(msg === 'exp'){
+          toast.info('Su sesión ha expirado');
+        }
+      }
+
+      setloading(false);
+    }
+
+  }, []);
 
   const onLogin = async (e) => {
     e.preventDefault();
@@ -61,9 +81,17 @@ function Login() {
         //login
 
         console.log(result);
-        result.message ? toast.success(result.message) : toast.success(`Bienvenido ${result.client.nombre_cliente}!`);
+        result.message ? toast.success(result.message) : toast.success(`Bienvenido ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`);
         addToken(result.token);
         auth.setUser(result.token, result.client);
+
+        /*
+        if(query.nextPage && query.nextPage !== ""){
+          router.push(query.nextPage);
+        }else{
+          router.push('/');
+        }
+        */
 
       }else{
 
@@ -86,21 +114,6 @@ function Login() {
     });
   }
 
-  useEffect(() => {
-    const {msg} = router.query;
-    if(loading) {
-      if(msg){
-        if(msg === 'tkn'){
-          toast.info('Debe iniciar sesión para ver esta sección');
-        }else if(msg === 'exp'){
-          toast.info('Su sesión ha expirado');
-        }
-      }
-
-      setloading(false);
-    }
-  }, []);
-
   const handleSocialLoginByFacebook = (token) => {
     //console.log(token);
     setsuccess(true);
@@ -110,9 +123,18 @@ function Login() {
       const result = res.data;
 
       if(result.result){
-        result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
+        result.client ? toast.success(`Bienvenido ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`) : toast.success(result.mesagge);
         addToken(result.token);
         auth.setUser(result.token, result.client);
+
+        /*
+        if(query.nextPage && query.nextPage !== ""){
+          router.push(query.nextPage);
+        }else{
+          router.push('/');
+        }
+        */
+
       }else{
         toast.error('Intente registrarse en wingstore para poder iniciar sesión');
         setsuccess(false);
@@ -133,9 +155,18 @@ function Login() {
         const result = res.data;
   
         if(result.result){
-          result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
+          result.client ? toast.success(`Bienvenido ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`) : toast.success(result.mesagge);
           addToken(result.token);
           auth.setUser(result.token, result.client);
+
+          /*
+          if(query.nextPage && query.nextPage !== ""){
+            router.push(query.nextPage);
+          }else{
+            router.push('/');
+          }
+          */
+
         }else{
           toast.error('Intente registrarse en wingstore para poder iniciar sesión');
           setsuccess(false);
@@ -153,9 +184,11 @@ function Login() {
 
   return (
     <PublicRoute>
+      
       <Head>
           <title>Wings - Login</title>
       </Head>
+      {success && <Loader />} 
       <Layout blank>
           <div className="header-blank">
             <div className='container'>
@@ -174,7 +207,6 @@ function Login() {
               </div>
             </div>
           </div>
-          {success && <Loader />}
           <div className="content-login">
             <div className="content-form w-100">
               <div className="container">
@@ -270,6 +302,7 @@ function Login() {
             </div>
           </div>
       </Layout>
+      
     </PublicRoute>
   )
 }

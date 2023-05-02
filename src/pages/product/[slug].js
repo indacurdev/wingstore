@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Link from 'next/link';
 import Head from 'next/head'
-import axios from 'axios';
+import axios from '../../lib/fetch';
 import { API_URL } from '@/config/config';
 
 import { useRouter } from 'next/router';
@@ -37,17 +37,21 @@ function ViewProduct(props) {
     const [errors, seterrors]               = useState([]);
 
     const [payData, setpayData]             = useState([]);
+    const [accounts, setaccounts]           = useState(null);
+
+    const [sending, setsending] = useState(false);
 
     const [count, setcount] = useState(0);
     const [pay, setpay] = useState(false);
 
-    // console.log(props);
+    console.log(selectedPaymentMethod);
     // console.log(template);
 
     let inputs = '';
 
     const session         = useSelector((state) => state.session);
-    const user              = session.user;
+    const user            = session.user;
+    const auth            = session.auth;
 
     useEffect(() => {
 
@@ -124,9 +128,50 @@ function ViewProduct(props) {
             toast.error('Debe completar los datos presentados en el formulario');
             window.scroll(0, (document.getElementById("dataProduct").offsetTop - 70));
         }else{
-            window.scroll(0, (document.getElementById("dataProduct").offsetTop - 70));
-            setpayData(data);
-            setpay(true);
+
+            setsending(true);
+
+            axios.get(`verify_code/${props.id+`/`+selectedPlan.puntos_plan}`)
+            .then((res) => {
+                const result = res.data;
+                console.log('Verify', result);
+
+                if(result.result){
+
+                    if(selectedPaymentMethod.tipo_pasarela === 'manual'){
+
+                        axios.get(`accounts/${selectedPaymentMethod.id_mtp}`)
+                        .then((res) => {
+                            const resultacc = res.data;
+                            //console.log('Verify', result);
+
+                            if(resultacc.result){
+                                setpayData(data);
+                                setsending(false);
+                                setaccounts(resultacc.accounts);
+                                window.scroll(0, 0);
+                                setpay(true);
+                            }else{
+                                //toast.error(result.message);
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                            setsending(false);
+                        });
+                    }else{
+                        setsending(false);
+                        setpayData(data);
+                        window.scroll(0, 0);
+                        setpay(true);
+                    }
+
+                }else{
+                    toast.error(result.message);
+                }
+            }).catch((err) => {
+                console.log(err);
+                setsending(false);
+            });
         }
     }
 
@@ -298,7 +343,11 @@ function ViewProduct(props) {
                                                                     }
 
                                                                     if(item.nombre_mtp.toLowerCase() === 'wcoins'){
-                                                                        if(Number(user.wingscoins) < precioPlan){
+                                                                        if(auth){
+                                                                            if(Number(user.wingscoins) < precioPlan && auth){
+                                                                                isDisabled = true;
+                                                                            }
+                                                                        }else{
                                                                             isDisabled = true;
                                                                         }
                                                                     }
@@ -348,19 +397,30 @@ function ViewProduct(props) {
                                                 */}
 
                                                 <div className='text-end'>
-                                                    <button 
-                                                        disabled={(selectedPaymentMethod === null || selectedPlan === null)}
-                                                        className='btn btn-primary px-4 fw-bold btn-lg'
-                                                        type='submit'
-                                                    >
-                                                        Continuar compra
-                                                    </button>
+                                                    {auth ?
+                                                        <button 
+                                                            disabled={(selectedPaymentMethod === null || selectedPlan === null || sending)}
+                                                            className='btn btn-primary px-4 fw-bold btn-lg'
+                                                            type='submit'
+                                                        >
+                                                            {!sending ? <span className='px-3'>Continuar compra</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
+                                                        </button>
+                                                    :
+                                                        <Link 
+                                                            href={`/login?nextPage=product/${props.slug}`}
+                                                            disabled={(selectedPaymentMethod === null || selectedPlan === null)}
+                                                            className='btn btn-primary px-4 fw-bold btn-lg'
+                                                            type='submit'
+                                                        >
+                                                            Iniciar sesión
+                                                        </Link>
+                                                    }
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                     :
-                                    <Pay cancel={() => cancelPay()} product={product} data={payData} method={selectedPaymentMethod} plan={selectedPlan} />
+                                    <Pay cancel={() => cancelPay()} accounts={accounts} product={product} data={payData} method={selectedPaymentMethod} plan={selectedPlan} />
                                 }
 
                             </div>
@@ -397,10 +457,10 @@ ViewProduct.getInitialProps = wrapper.getInitialPageProps((store) => async ({ re
 
     const { slug }      = query;
 
-    const product       = await axios.get(`${API_URL}/product/${slug}`);
+    const product       = await axios.get(`/product/${slug}`);
     const idProduct     = product.data.product.id_producto;
 
-    const methods       = await axios.get(`${API_URL}/methods/${pais}/${idProduct}`);
+    const methods       = await axios.get(`/methods/${pais}/${idProduct}`);
 
     return {
         slug,

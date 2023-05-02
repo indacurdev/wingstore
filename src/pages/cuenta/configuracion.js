@@ -131,7 +131,7 @@ function Config(props) {
                                                 <div className="row">
                                                     <div className={((errors[`password`]) ? "has-error" : "") + ` col-lg-12 py-2`}>
                                                         <label htmlFor="password" className='mb-2'>
-                                                            Contraseña nueva
+                                                            Contraseña actual
                                                         </label>
                                                         <input 
                                                             type="password" 

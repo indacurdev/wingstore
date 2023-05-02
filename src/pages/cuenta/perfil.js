@@ -64,6 +64,14 @@ function Perfil(props) {
                                     <h1 className='fw-bold text-secondary h2 mb-4'>
                                         Perfil
                                     </h1>
+                                    {!props.completed &&
+                                        <div className='alert alert-info'>
+                                            <p className="mb-0">
+                                                <i className="fa-solid fa-circle-info me-3"></i>
+                                                Complete su perfil para acceder a todas las funcionalidades.
+                                            </p>
+                                        </div>
+                                    }
                                     <div className="card border-0 mb-3">
                                         <div className="card-body">
                                             <div className="row">

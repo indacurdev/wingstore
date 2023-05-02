@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react'
-import Router from 'next/router'
+import { useRouter } from 'next/router';
 import {useAuth} from "../../context/auth"
 import Loader from '../Loader';
 
 function PublicRoute({ children }) {
   const {auth} = useAuth();
+  const router  = useRouter();
+  const query   = router.query;
+
   console.log('auth', auth);
 
   useEffect(() => {
     if(auth){
-      Router.push('/');
+      if(query.nextPage && query.nextPage !== ""){
+        router.push(query.nextPage);
+      }else{
+        router.push('/');
+      }
     }
   }, [auth]);
 
