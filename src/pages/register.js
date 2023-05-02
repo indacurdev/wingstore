@@ -43,7 +43,7 @@ function Register() {
 
     const onRegister = async (e) => {
         e.preventDefault();
-        const url = `/auth/register/`
+        const url = `/auth/register`
 
         let data = {
             nombre_cliente: nombre_cliente,
@@ -66,7 +66,7 @@ function Register() {
             //login
 
             console.log(result);
-            result.message ? toast.success(result.message) : toast.success(`Bienvenido a wings ${result.client.nombre_cliente}!`);
+            result.message ? toast.success(result.message) : toast.success(`Bienvenido a wings ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`);
             addToken(result.token);
             auth.setUser(result.token, result.client);
 
@@ -100,7 +100,7 @@ function Register() {
         const result = res.data;
 
         if(result.result){
-            result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
+            result.client ? toast.success(`Bienvenido ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`) : toast.success(result.mesagge);
             addToken(result.token);
             auth.setUser(result.token, result.client);
         }else{
@@ -123,7 +123,7 @@ function Register() {
             const result = res.data;
     
             if(result.result){
-            result.client ? toast.success(`Bienvenido ${result.client.nombre_cliente}!`) : toast.success(result.mesagge);
+            result.client ? toast.success(`Bienvenido ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`) : toast.success(result.mesagge);
             addToken(result.token);
             auth.setUser(result.token, result.client);
             }else{
