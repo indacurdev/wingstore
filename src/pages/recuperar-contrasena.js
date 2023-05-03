@@ -27,7 +27,7 @@ function Login() {
     const goToRecoverPassword = (e) => {
         e.preventDefault();
 
-        const url = `/auth/change_password_reset/`
+        const url = `/auth/change_password_reset`
         let data = {
             correo_cliente: email
         }
