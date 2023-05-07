@@ -7,10 +7,11 @@ export const getCookieFromReq = (req, cookieKey) => {
     return cookie.split("=")[1];
 };
 
-export const getTemplate = (item, onchange) => {
+export const getTemplate = (item, onchange, defaultvalue = "") => {
   if(item){
     return (
       <input 
+        defaultValue={defaultvalue}
         type="text" 
         id={item.id}
         name={item.name} 
@@ -20,6 +21,15 @@ export const getTemplate = (item, onchange) => {
       />
     );
   }
+}
+
+export const validateEmail = (email = "") => {
+  var validRegexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if(email.match(validRegexEmail)){
+    return true;
+  }
+
+  return false;
 }
 
 export const slugify = str =>

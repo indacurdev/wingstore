@@ -1,14 +1,15 @@
 import React from 'react'
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import axios from 'axios';
 
 const clientId          = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 // const clientSecret   = process.env.PAYPAL_CLIENT_SECRET;
 
-function PaypalBtn(props) {
+const Button = () => {
+    const [{ isPending }] = usePayPalScriptReducer();
     return (
         <div>
-            <PayPalScriptProvider options={{ "client-id": clientId }}>
+            {!isPending ?
                 <PayPalButtons 
                     createOrder={async () => {
                         try{
@@ -42,6 +43,18 @@ function PaypalBtn(props) {
                     }}
                     style={{ layout: "horizontal" }} 
                 />
+            :
+                <i className="fa-solid fa-spin fa-spinner"></i>
+            }
+        </div>
+    )
+}
+
+function PaypalBtn(props) {
+    return (
+        <div>
+            <PayPalScriptProvider options={{ "client-id": clientId }}>
+                <Button />
             </PayPalScriptProvider>
         </div>
     )

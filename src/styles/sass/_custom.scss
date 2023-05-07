@@ -918,6 +918,15 @@ footer{
 
     transition: all .2s ease;
 
+    &.disabled{
+        cursor: not-allowed;
+        opacity: .8;
+
+        .overlay-plan{
+            background: rgba($light, .5);
+        }
+    }
+
     .overlay-plan{
         display: block;
         position: absolute;

@@ -8,7 +8,10 @@ import { useRouter } from 'next/router';
 
 import Layout from '@/components/app/Layout'
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import { getTemplate, slugify } from '@/utils/functions';
+import { getTemplate, slugify, validateEmail } from '@/utils/functions';
+
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 import { toast } from 'react-toastify';
 
@@ -20,12 +23,12 @@ function ViewProduct(props) {
 
     console.log(props);
 
-    const labels = false;
+    const labels    = false;
 
     const product   = props.data.product;
     const template  = props.data.template;
     const plans     = props.data.plans;
-    const methods  = props.payment_methods;
+    const methods   = props.payment_methods;
 
     // const [plans, setplans] = useState([]);
 
@@ -39,10 +42,12 @@ function ViewProduct(props) {
     const [payData, setpayData]             = useState([]);
     const [accounts, setaccounts]           = useState(null);
 
-    const [sending, setsending] = useState(false);
+    const [sending, setsending]             = useState(false);
 
-    const [count, setcount] = useState(0);
-    const [pay, setpay] = useState(false);
+    const [count, setcount]                 = useState(0);
+    const [pay, setpay]                     = useState(false);
+
+    const [email, setemail]                 = useState('');
 
     console.log(selectedPaymentMethod);
     // console.log(template);
@@ -112,6 +117,9 @@ function ViewProduct(props) {
                 if(value === ""){
                     errorsCount++;
                     errorsData[event.target.elements[item.name].name] = "Debe llenar este campo";
+                }else if(item.name.toLowerCase() === 'email' && !validateEmail(value)){
+                    errorsCount++;
+                    errorsData[event.target.elements[item.name].name] = "Debe ingresar un email válido";
                 }else{
                     // console.log(item);
                     data.push({
@@ -130,41 +138,14 @@ function ViewProduct(props) {
         }else{
 
             setsending(true);
-
+            /*
+            OLD VALIDATE CODE
             axios.get(`verify_code/${props.id+`/`+selectedPlan.puntos_plan}`)
             .then((res) => {
                 const result = res.data;
                 console.log('Verify', result);
 
                 if(result.result){
-
-                    if(selectedPaymentMethod.tipo_pasarela === 'manual'){
-
-                        axios.get(`accounts/${selectedPaymentMethod.id_mtp}`)
-                        .then((res) => {
-                            const resultacc = res.data;
-                            //console.log('Verify', result);
-
-                            if(resultacc.result){
-                                setpayData(data);
-                                setsending(false);
-                                setaccounts(resultacc.accounts);
-                                window.scroll(0, 0);
-                                setpay(true);
-                            }else{
-                                //toast.error(result.message);
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                            setsending(false);
-                        });
-                    }else{
-                        setsending(false);
-                        setpayData(data);
-                        window.scroll(0, 0);
-                        setpay(true);
-                    }
-
                 }else{
                     toast.error(result.message);
                 }
@@ -172,6 +153,37 @@ function ViewProduct(props) {
                 console.log(err);
                 setsending(false);
             });
+            */
+
+            if(selectedPaymentMethod.tipo_pasarela === 'manual'){
+
+                axios.get(`accounts/${selectedPaymentMethod.id_mtp}`)
+                .then((res) => {
+                    const resultacc = res.data;
+                    //console.log('Verify', result);
+
+                    if(resultacc.result){
+                        setpayData(data);
+                        setsending(false);
+                        setaccounts(resultacc.accounts);
+                        window.scroll(0, 0);
+                        setpay(true);
+                    }else{
+                        toast.error(result.message);
+                    }
+
+                }).catch((err) => {
+                    console.log(err);
+                    setsending(false);
+                });
+            }else{
+                setsending(false);
+                setpayData(data);
+                window.scroll(0, 0);
+                setpay(true);
+            }
+
+               
         }
     }
 
@@ -187,6 +199,10 @@ function ViewProduct(props) {
 
     const handleChangeInputTemplate = (val, name) => {
         if(val !== ""){
+            if(name.toLowerCase() === 'email'){
+                setemail(val);
+            }
+
             if(errors[name]){
                 let newErrors = errors;
                 delete newErrors[name];
@@ -260,7 +276,7 @@ function ViewProduct(props) {
                                                     <div className="card border-0 w-100 shadow mb-4">
                                                         <div className="card-header py-3 bg-primary">
                                                             <h5 className='fw-bold fb h4 mb-0 text-secondary'>
-                                                                Información del usuario
+                                                                Información del juego
                                                             </h5>
                                                         </div>
                                                         <div className="card-body py-4">
@@ -298,18 +314,44 @@ function ViewProduct(props) {
                                                         <div className="card-body py-4">
                                                             <div className="row">
                                                                 {plans.length > 0 && plans.map((item, key) => {
-                                                                    return(
-                                                                        <div className='col-lg-4 col-6 py-2' key={key}>
-                                                                            <button 
-                                                                                type='button' 
-                                                                                onClick={() => changePlan((item === selectedPlan) ? null : item)} 
-                                                                                className={((selectedPlan === item) ? 'active' : '') + ` plan fb`}
-                                                                            >
-                                                                                <span className="overlay-plan"></span>
-                                                                                {item.puntos_plan}
-                                                                            </button>
-                                                                        </div>
-                                                                    )
+                                                                    if(item.available){
+                                                                        return(
+                                                                            <div className='col-lg-4 col-6 py-2' key={key}>
+                                                                                <button 
+                                                                                    disabled={!item.available}
+                                                                                    type='button' 
+                                                                                    onClick={() => changePlan((item === selectedPlan) ? null : item)} 
+                                                                                    className={((selectedPlan === item) ? 'active' : '') + ` plan fb`}
+                                                                                >
+                                                                                    <span className="overlay-plan"></span>
+                                                                                    {item.puntos_plan}
+                                                                                </button>
+                                                                            </div>
+                                                                        )
+                                                                    }else{
+                                                                        return(
+                                                                                <OverlayTrigger
+                                                                                    key={key}
+                                                                                    placement="top"
+                                                                                    // delay={{ show: 250, hide: 400 }}
+                                                                                    overlay={<Tooltip id={`not-available-${key}`}>No Disponible</Tooltip>}
+                                                                                >
+                                                                                <div className='col-lg-4 col-6 py-2'>
+                                                                                    
+                                                                                        <button 
+                                                                                            // disabled
+                                                                                            type='button' 
+                                                                                            className={((selectedPlan === item) ? 'active' : '') + ` plan disabled fb`}
+                                                                                        >
+                                                                                            <span className="overlay-plan"></span>
+                                                                                            {item.puntos_plan}
+                                                                                        </button>
+                                                                                    
+                                                                                </div>
+                                                                                </OverlayTrigger>
+                                                                            
+                                                                        )
+                                                                    }
                                                                 })}
                                                             </div>
                                                         </div>
@@ -397,7 +439,7 @@ function ViewProduct(props) {
                                                 */}
 
                                                 <div className='text-end'>
-                                                    {auth ?
+                                                    {//auth ?
                                                         <button 
                                                             disabled={(selectedPaymentMethod === null || selectedPlan === null || sending)}
                                                             className='btn btn-primary px-4 fw-bold btn-lg'
@@ -405,6 +447,7 @@ function ViewProduct(props) {
                                                         >
                                                             {!sending ? <span className='px-3'>Continuar compra</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
                                                         </button>
+                                                        /*
                                                     :
                                                         <Link 
                                                             href={`/login?nextPage=product/${props.slug}`}
@@ -414,13 +457,14 @@ function ViewProduct(props) {
                                                         >
                                                             Iniciar sesión
                                                         </Link>
+                                                        */
                                                     }
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                     :
-                                    <Pay cancel={() => cancelPay()} accounts={accounts} product={product} data={payData} method={selectedPaymentMethod} plan={selectedPlan} />
+                                    <Pay email={email} cancel={() => cancelPay()} accounts={accounts} product={product} data={payData} method={selectedPaymentMethod} plan={selectedPlan} />
                                 }
 
                             </div>
@@ -462,9 +506,24 @@ ViewProduct.getInitialProps = wrapper.getInitialPageProps((store) => async ({ re
 
     const methods       = await axios.get(`/methods/${pais}/${idProduct}`);
 
+    let productData     = product.data;
+    let template        = productData.template;
+
+    if(Array.isArray(template)){
+        const emailCampo = {
+            descripcion_campo: "Email",
+            id_campo: 0,
+            nombre: "Email",
+            tipo: "email"
+        }
+
+        template.push(emailCampo);
+        productData.template = template;
+    }
+
     return {
         slug,
-        data:   product.data,
+        data:   productData,
         id:     idProduct,
         payment_methods: methods.data
     }

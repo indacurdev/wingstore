@@ -11,14 +11,14 @@ import PaypalBtn from './PaypalBtn';
 import StripeForm, { ContentStripeForm } from './StripeForm';
 import { useRouter } from 'next/router';
 
-function Pay({cancel, product, data, method, plan, accounts}) {
+function Pay({cancel, product, data, method, plan, accounts, email}) {
   
   // console.log('PAYMENT ========');
   // console.log(product);
   // console.log(data);
   // console.log('metodo', method);
   // console.log('plan', plan);
-  console.log('Accounts', accounts);
+  console.log('Email', email);
 
   const router          = useRouter();
   const session         = useSelector((state) => state.session, shallowEqual);
@@ -37,8 +37,8 @@ function Pay({cancel, product, data, method, plan, accounts}) {
   const [success, setsuccess] = useState(false);
 
   const [payData, setpayData] = useState({
-    nombre:     auth ? user.nombre_cliente && user.nombre_cliente !== "" : "",
-    email:      auth ? user.correo_cliente : "",
+    nombre:     auth ? user.nombre_cliente : "",
+    email:      auth ? user.correo_cliente : ((email) ? email : ""),
     pagoMovil:  "",
     ref:        "",
     note:       "",
@@ -139,13 +139,14 @@ function Pay({cancel, product, data, method, plan, accounts}) {
             ...payData,
             date: moment(date).format('YYYY-MM-DD')
           },
-          country
+          country,
+          email
         }
 
         //print data
         console.log('PAY', dataToSend);
-
         setsending(true);
+        
         const url = `${API_URL}/save_sale`;
 
         axios({
@@ -161,7 +162,12 @@ function Pay({cancel, product, data, method, plan, accounts}) {
             toast.success(result.message);
             setsuccess(true);
             window.scroll(0, (document.getElementById("paymentContainer").offsetTop - 70));
-            router.push('/cuenta/historial-de-compras');
+            
+            if(auth){
+              router.push('/cuenta/historial-de-compras');
+            }else{
+              router.push('/payment-success');
+            }
           }
           
           setsending(false);
@@ -177,6 +183,8 @@ function Pay({cancel, product, data, method, plan, accounts}) {
           }
     
         });
+        
+        
       }
     }
   }
@@ -199,7 +207,8 @@ function Pay({cancel, product, data, method, plan, accounts}) {
           ...payData, 
           date: moment(date).format('YYYY-MM-DD')
         },
-        country
+        country,
+        email
       }
 
       //print data
@@ -221,7 +230,11 @@ function Pay({cancel, product, data, method, plan, accounts}) {
           toast.success(result.message);
           setsuccess(true);
           window.scroll(0, (document.getElementById("paymentContainer").offsetTop - 70));
-          router.push('/cuenta/historial-de-compras');
+          if(auth){
+            router.push('/cuenta/historial-de-compras');
+          }else{
+            router.push('/payment-success');
+          }
         }
         
         setsending(false);
@@ -415,6 +428,7 @@ function Pay({cancel, product, data, method, plan, accounts}) {
                                           placeholder='Ingrese su nombre'
                                           id='pay-user-name'
                                           name='nombre'
+                                          defaultValue={payData.nombre}
                                           onChange={(e) => handleInputChange(e)}
                                         />
                                       :
@@ -447,6 +461,7 @@ function Pay({cancel, product, data, method, plan, accounts}) {
                                           placeholder='Correo eléctronico'
                                           id='pay-user-email'
                                           name='email'
+                                          defaultValue={payData.email}
                                           onChange={(e) => handleInputChange(e)}
                                         />
                                       :
@@ -580,7 +595,7 @@ function Pay({cancel, product, data, method, plan, accounts}) {
                                       type='submit' 
                                       className='btn btn-primary btn-lg fw-bold'
                                     >
-                                      {!sending ? <span className='px-5'>Completar orden</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
+                                      {!sending ? <span>Completar orden</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
                                     </button>
                                   </div>
                                 </div>
@@ -680,13 +695,19 @@ function Pay({cancel, product, data, method, plan, accounts}) {
             <div className="card border-0 w-100 shadow mb-4">
               <div className="card-body">
                 <div className="text-center">
+
                   <div className='mb-4 text-success'>
                     <i class="fa-regular fa-6x fa-circle-check"></i>
                   </div>
                   <h3 className='h2 fw-bold'>
                     ¡Compra realizada exitosamente!
                   </h3>
-                  <p>Redirigiendo al historial de compras...</p>
+                  {auth ?
+                    <p>Redirigiendo al historial de compras...</p>
+                  :
+                    <p>Redirigiendo...</p>
+                  }
+                  
                 </div>
               </div>
             </div>
