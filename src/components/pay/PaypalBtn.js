@@ -5,7 +5,7 @@ import axios from 'axios';
 const clientId          = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 // const clientSecret   = process.env.PAYPAL_CLIENT_SECRET;
 
-const Button = () => {
+const Button = (props) => {
     const [{ isPending }] = usePayPalScriptReducer();
     return (
         <div>
@@ -54,7 +54,7 @@ function PaypalBtn(props) {
     return (
         <div>
             <PayPalScriptProvider options={{ "client-id": clientId }}>
-                <Button />
+                <Button {...props} />
             </PayPalScriptProvider>
         </div>
     )
