@@ -6,12 +6,11 @@ export default async function handler(req, res) {
 
     if(req.method === 'POST'){
 
-        return res.json({data: req.method, body: req.body}) ;
-
-        const request = new paypal.orders.OrdersCreateRequest();
+        const request = await new paypal.orders.OrdersCreateRequest();
         request.headers['prefer'] = 'return=representation';
         const body = req.body;
-        console.log('PAYPAL BODY', body);
+
+        return res.json({data: req.method, body: req.body});
 
         request.requestBody({
             intent: 'CAPTURE',
@@ -28,7 +27,7 @@ export default async function handler(req, res) {
         const response = await PaypalClient.execute(request);
 
         if (response.statusCode !== 201) {
-            res.status(500)
+            res.status(500);
         }
 
         return res.json({ id: response.result.id });
