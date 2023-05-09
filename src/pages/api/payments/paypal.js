@@ -4,6 +4,8 @@ import paypal from '@paypal/checkout-server-sdk'
 export default async function handler(req, res) {
     const PaypalClient = client();
 
+    return res.json({data: req.method}) ;
+
     if(req.method === 'POST'){
         const request = new paypal.orders.OrdersCreateRequest();
         request.headers['prefer'] = 'return=representation';
