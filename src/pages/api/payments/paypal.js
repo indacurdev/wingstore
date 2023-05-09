@@ -5,7 +5,10 @@ export default async function handler(req, res) {
     const PaypalClient = client();
 
     if(req.method === 'POST'){
-        const request = await new paypal.orders.OrdersCreateRequest();
+
+        return res.json({data: req.method, body: req.body}) ;
+
+        const request = new paypal.orders.OrdersCreateRequest();
         request.headers['prefer'] = 'return=representation';
         const body = req.body;
         console.log('PAYPAL BODY', body);
