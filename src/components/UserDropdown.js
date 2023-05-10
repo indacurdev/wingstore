@@ -45,7 +45,7 @@ function UserDropdown() {
                         {(user.nombre_cliente && user.nombre_cliente !== "") ? user.nombre_cliente : user.correo_cliente}
                     </p>
 
-                    {user.nombre_cliente && user.nombre_cliente === "" ?
+                    {user.nombre_cliente && user.nombre_cliente !== "" ?
                         <p className="mb-4 h6 text-center text-muted">
                             {user.correo_cliente}
                         </p>

@@ -122,7 +122,7 @@ function Perfil(props) {
                                                     <h2 className='h1 fb text-light mb-0 d-flex align-items-center justify-content-between'>
                                                         <div>
                                                             <span className='text-success me-2'>
-                                                                {Number(data.user.puntos_cliente).toFixed(2)}
+                                                                {Number(data.user.wingscoins).toFixed(2)}
                                                             </span> 
                                                             <span>Wcoins</span>
                                                         </div>
@@ -146,7 +146,7 @@ function Perfil(props) {
                                                     <h2 className='h1 fb text-secondary mb-0 d-flex align-items-center justify-content-between'>
                                                         <div>
                                                             <span className='text-primary me-2'>
-                                                                {Number(data.user.wingscoins).toFixed(2)}
+                                                                {Number(data.user.puntos_cliente).toFixed(2)}
                                                             </span> 
                                                             <span>Wpoints</span>
                                                         </div>

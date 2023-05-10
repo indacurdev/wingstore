@@ -23,6 +23,7 @@ const FacebookBtn = dynamic(
 )
 
 import Loader from '@/components/Loader';
+import { validateEmail } from '@/utils/functions';
 
 function Register() {
     const auth = useAuth();
@@ -32,6 +33,8 @@ function Register() {
     const [email, setemail]                     = useState('');
     const [pass, setpass]                       = useState('');
     const [repeatpass, setrepeatpass]           = useState('');
+
+    const [errors, seterrors] = useState({});
 
     const [loading, setloading] = useState(true);
     const [sending, setsending] = useState('');
@@ -43,52 +46,89 @@ function Register() {
 
     const onRegister = async (e) => {
         e.preventDefault();
-        const url = `/auth/register`
 
-        let data = {
-            nombre_cliente: nombre_cliente,
-            correo_cliente: email, 
-            password:       pass,
-            pais_id:        1
+        let errors = {};
+        let countErrors = 0;
+        seterrors({});
+
+        if(nombre_cliente.trim() === ""){
+            errors.nombre_cliente = 'Ingrese su nombre';
+            countErrors++;
         }
 
-        setsending(true);
+        if(email.trim() === ""){
+            errors.email = 'Debe ingresar un correo electrónico';
+            countErrors++;
+        }else if(!validateEmail(email.trim())){
+            errors.email = 'Debe ingresar un correo válido';
+            countErrors++;
+        }
 
-        axios({
-            method: "post",
-            url,
-            data
-        }).then((res) => {
+        if(pass.trim() === ""){
+            errors.pass = 'Debe ingresar su contraseña';
+            countErrors++;
+        }
 
-        let result = res.data;
+        if(repeatpass.trim() === ""){
+            errors.repeatpass = 'Debe confirmar su contraseña';
+            countErrors++;
+        }else if(repeatpass.trim() !== pass.trim()){
+            errors.repeatpass = 'Las contraseñas deben ser iguales';
+            countErrors++;
+        }
 
-        if(result.token){
-            //login
-
-            console.log(result);
-            result.message ? toast.success(result.message) : toast.success(`Bienvenido a wings ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`);
-            addToken(result.token);
-            auth.setUser(result.token, result.client);
-
+        if(countErrors > 0){
+            toast.error(`Verifique los datos del formulario`);
+            seterrors(errors);
+            window.scroll(0, (document.getElementById("contentRegister").offsetTop - 70));
         }else{
 
-            //error
-            toast.error('Por favor verifique sus datos');
+            let data = {
+                nombre_cliente: nombre_cliente,
+                correo_cliente: email, 
+                password:       pass,
+                pais_id:        1
+            }
 
+            setsending(true);
+
+            const url = `/auth/register`
+            axios({
+                method: "post",
+                url,
+                data
+            }).then((res) => {
+
+                let result = res.data;
+
+                if(result.token){
+                    //login
+
+                    console.log(result);
+                    result.message ? toast.success(result.message) : toast.success(`Bienvenido a wings ${(result.client.nombre_cliente && result.client.nombre_cliente !== "") ? result.client.nombre_cliente : ''}!`);
+                    addToken(result.token);
+                    auth.setUser(result.token, result.client);
+
+                }else{
+
+                    //error
+                    toast.error('Por favor verifique sus datos');
+
+                }
+
+                setsending(false);
+
+            }).catch((err) => {
+
+            let res = err.response;
+            if(res.data){
+                let res = err.response.data;
+                console.error(res);
+                setsending(false);
+            }
+
+            });
         }
-
-        setsending(false);
-
-        }).catch((err) => {
-
-        let res = err.response;
-        if(res.data){
-            let res = err.response.data;
-            console.error(res);
-            setsending(false);
-        }
-
-        });
     }
 
     const handleSocialLoginByFacebook = (token) => {
@@ -161,7 +201,7 @@ function Register() {
                 </div>
                 </div>
                 {success && <Loader />}
-                <div className="content-login">
+                <div className="content-login" id='contentRegister'>
                 <div className="content-form w-100">
                     <div className="container">
 
@@ -196,7 +236,7 @@ function Register() {
                                 
                                 <div className="content-input">
 
-                                    <div className="form-group mb-3">
+                                    <div className={((errors[`nombre_cliente`]) ? "has-error" : "") + ` form-group mb-3`}>
                                         <input 
                                             type="text" 
                                             className="form-control form-control-lg bg-white" 
@@ -204,9 +244,14 @@ function Register() {
                                             name='wname'
                                             onChange={(e) => setnombre_cliente(e.target.value)}
                                         />
+                                        {errors[`nombre_cliente`] &&
+                                            <div className='text-danger fw-bold small py-2 small'>
+                                                {errors[`nombre_cliente`]}
+                                            </div>
+                                        }
                                     </div>
 
-                                    <div className="form-group mb-3">
+                                    <div className={((errors[`email`]) ? "has-error" : "") + ` form-group mb-3`}>
                                         <input 
                                             type="text" 
                                             className="form-control form-control-lg bg-white" 
@@ -214,9 +259,14 @@ function Register() {
                                             name='wemail'
                                             onChange={(e) => setemail(e.target.value)}
                                         />
+                                        {errors[`email`] &&
+                                            <div className='text-danger fw-bold small py-2 small'>
+                                                {errors[`email`]}
+                                            </div>
+                                        }
                                     </div>
                                     
-                                    <div className="form-group mb-3">
+                                    <div className={((errors[`pass`]) ? "has-error" : "") + ` form-group mb-3`}>
                                         <input 
                                             type="password" 
                                             name='wpass'
@@ -224,16 +274,26 @@ function Register() {
                                             placeholder='Contraseña' 
                                             onChange={(e) => setpass(e.target.value)}
                                         />
+                                        {errors[`pass`] &&
+                                            <div className='text-danger fw-bold small py-2 small'>
+                                                {errors[`pass`]}
+                                            </div>
+                                        }
                                     </div>
 
-                                    <div className="form-group mb-3">
+                                    <div className={((errors[`repeatpass`]) ? "has-error" : "") + ` form-group mb-3`}>
                                         <input 
                                             type="password" 
                                             name='wrepeatpass'
                                             className="form-control form-control-lg bg-white" 
                                             placeholder='Repetir contraseña' 
-                                            onChange={(e) => setpass(e.target.value)}
+                                            onChange={(e) => setrepeatpass(e.target.value)}
                                         />
+                                        {errors[`repeatpass`] &&
+                                            <div className='text-danger fw-bold small py-2 small'>
+                                                {errors[`repeatpass`]}
+                                            </div>
+                                        }
                                     </div>
                                     
                                     <div className=''>
