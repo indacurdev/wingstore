@@ -15,7 +15,8 @@ export const sessionSlice = createSlice({
     reducers: {
         setAuth(state, action) {
             state.auth = true;
-            state.user = action.payload;
+            state.user = action.payload.user;
+            state.profile = action.payload.profile;
         },
         logout(state, action) {
             state.auth      = false;

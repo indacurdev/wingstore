@@ -23,7 +23,7 @@ export const loadInitialFunctions = async (store, req) => {
                 
                 const me = await axios.get(`/auth/me`);
                 console.log(me.data);
-                await store.dispatch(setAuth(me.data.user));
+                await store.dispatch(setAuth(me.data));
                 
             } catch(err) {
                 await removeToken(token);

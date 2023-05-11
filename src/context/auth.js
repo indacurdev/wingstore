@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from '../lib/fetch'
 import cookie from 'js-cookie'
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setAuth } from "@/store/slices/session";
@@ -14,7 +15,10 @@ export const AuthProvider = ({ children }) => {
 
     const setUser = async (token, user) => {
         cookie.set('wtoken', token);
-        await dispatch(setAuth(user));
+        console.log('datauser', user);
+
+        const me = await axios.get(`/auth/me`);
+        await dispatch(setAuth(me.data));
     }
 
     const handleLogout = async () => {

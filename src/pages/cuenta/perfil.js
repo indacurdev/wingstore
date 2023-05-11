@@ -64,7 +64,7 @@ function Perfil(props) {
                                     <h1 className='fw-bold text-secondary h2 mb-4'>
                                         Perfil
                                     </h1>
-                                    {!props.completed &&
+                                    {!data.profile.completed &&
                                         <div className='alert alert-info'>
                                             <p className="mb-0">
                                                 <i className="fa-solid fa-circle-info me-3"></i>
@@ -98,7 +98,7 @@ function Perfil(props) {
                                                     <div className="row">
                                                         <div className="col-lg-10 col-7 mb-2">
                                                             <span className='text-readonly'>
-                                                                ************
+                                                                {!data.profile.nompassword ? `Usted aun no ha configurado una contraseña` : '************'}
                                                             </span>
                                                         </div>
                                                         <div className="col-lg-2 col-5 mb-2">
