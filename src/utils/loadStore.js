@@ -1,21 +1,35 @@
-import axios from "../lib/fetch";
-
+import {verify} from 'jsonwebtoken'
+import axios, { addToken, removeToken } from "@/lib/fetch";
 import { setBanners, setCountries, setPaymentMethods, setSelectedCountry } from "@/store/slices/app";
 import { getCookieFromReq } from "./functions";
-import { addToken } from "@/lib/fetch";
+import { logout, setAuth } from "@/store/slices/session";
 
 export const loadInitialFunctions = async (store, req) => {
     const initialstate = store.getState();
     let defaultCountry = null;
-    console.log(initialstate);
+    // console.log(initialstate);
 
     // si existe un token en las cookies
     if(initialstate.app.countries.length === 0){
 
         const token = getCookieFromReq(req, 'wtoken');
-        console.log(token);
+        console.log('token', token);
+
         if(token && token !== ""){
-            addToken(token);
+            try {
+                var decoded = verify(token, process.env.JWT_SECRET);
+                console.log(decoded);
+                await addToken(token);
+                
+                const me = await axios.get(`/auth/me`);
+                console.log(me.data);
+                await store.dispatch(setAuth(me.data.user));
+                
+            } catch(err) {
+                await removeToken(token);
+                await store.dispatch(logout());
+                console.log('token no valido');
+            }
         }
 
         const countries = await axios.get(`/countries`);

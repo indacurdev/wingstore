@@ -3,7 +3,8 @@ import { HYDRATE } from "next-redux-wrapper";
 
 const initialState = {
     auth: false,
-    user: null
+    user: null,
+    profile: null
 };
 
 const hydrate = createAction(HYDRATE);
@@ -17,8 +18,9 @@ export const sessionSlice = createSlice({
             state.user = action.payload;
         },
         logout(state, action) {
-            state.auth = false;
-            state.user = null;
+            state.auth      = false;
+            state.user      = null;
+            state.profile   = null;
         },
         updateUser(state, action) {
             state.user = action.payload;

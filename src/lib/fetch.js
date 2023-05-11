@@ -14,11 +14,11 @@ if(typeof window !== "undefined"){
     fetch.defaults.headers.common = {'Authorization': `Bearer ${token}`};
 }
 
-export const addToken = (token) => {
+export const addToken = async (token) => {
     fetch.defaults.headers.common = {'Authorization': `Bearer ${token}`};
 }
 
-export const removeToken = () => {
+export const removeToken = async () => {
     delete fetch.defaults.headers.common["Authorization"];
 }
 

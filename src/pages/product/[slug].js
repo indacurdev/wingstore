@@ -369,10 +369,11 @@ function ViewProduct(props) {
                                                             <div className="row payment-methods">
                                                                 {methods.length > 0 && methods.map((item, key) => {
                                                                     
-                                                                    let precioPlan  = selectedPlan ? Number(selectedPlan.precio_plan) : null;
-                                                                    let maxPrice    = item.costo_maximo ? Number(item.costo_maximo) : null; 
-                                                                    let minPrice    = item.costo_minimo ? Number(item.costo_minimo) : null; 
-                                                                    let isDisabled  = false;
+                                                                    let precioPlan          = selectedPlan ? Number(selectedPlan.precio_plan) : null;
+                                                                    let maxPrice            = item.costo_maximo ? Number(item.costo_maximo) : null; 
+                                                                    let minPrice            = item.costo_minimo ? Number(item.costo_minimo) : null; 
+                                                                    let isDisabled          = false;
+                                                                    let disabledByWcoins    = false;
 
                                                                     if(precioPlan){
                                                                         if(minPrice && precioPlan < minPrice){

@@ -41,7 +41,7 @@ function CountriesDropdown() {
                             : 
                                 <i className="fa-solid text-secondary fa-globe"></i>
                             }
-                            <span className='d-md-inline-flex d-none ms-2'>
+                            <span className='d-sm-inline-flex d-none ms-2'>
                                 {country.nombre}
                             </span>
                         </div>
