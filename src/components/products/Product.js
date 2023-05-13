@@ -18,7 +18,7 @@ function Product({ name = "", imagen = "", plans, slug = ""}) {
                             <span>50 %</span>
                         </div>
                     </div>
-                    <Image src={imagen} fill alt="" />
+                    <Image src={imagen !== "" ? `${process.env.NEXT_PUBLIC_IMAGESURL}/${imagen}` : ''} fill alt="" />
                 </div>
                 <div className="px-2 py-4 product-card-data-container">
                     <div className="overlay-text">
