@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IMAGESURL } from '@/config/config'
+import { IMAGESURL, PRODUCTSURL } from '@/config/config'
 
 function Product({ name = "", image = "", plans, slug = ""}) {
 
@@ -20,7 +20,7 @@ function Product({ name = "", image = "", plans, slug = ""}) {
                         </div>
                     </div>
                     {(image && image !== "") &&
-                        <img src={(image && image !== "") ? `${IMAGESURL}/${image}` : ''}  />
+                        <img src={(image && image !== "") ? `${PRODUCTSURL}/${image}` : ''}  />
                     }
                 </div>
                 <div className="px-2 py-4 product-card-data-container">

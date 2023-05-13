@@ -12,7 +12,7 @@ import Particles from '@/components/Particles';
 import { wrapper } from '@/store/store';
 import { setCountries, setSelectedCountry } from '@/store/slices/app';
 import axios from 'axios';
-import { API_URL, IMAGESURL } from '@/config/config';
+import { API_URL, IMAGESURL, PRODUCTSURL } from '@/config/config';
 import { loadInitialFunctions } from '@/utils/loadStore';
 import Loader from '@/components/Loader'
 import { useSelector } from 'react-redux'
@@ -20,10 +20,9 @@ import { useAuth } from '@/context/auth'
 
 function Home(props) {
   const products = !props.products ? [] : props.products.data;
-  // const banners  = useSelector((state) => state.app.banners);
-  const banners = [];
+  const banners  = useSelector((state) => state.app.banners);
 
-  // console.log(banners);
+  console.log(banners);
 
   const auth = useAuth();
 
@@ -38,6 +37,7 @@ function Home(props) {
             <Swiper
               spaceBetween={0}
               slidesPerView={1}
+              autoplay
               // onSlideChange={() => console.log('slide change')}
               // onSwiper={(swiper) => console.log(swiper)}
             >
@@ -48,7 +48,9 @@ function Home(props) {
                       <SwiperSlide key={key}>
                         <div className="min-vh-100 d-flex align-items-center position-relative">
                             <div className='img-full'>
-                              <Image fill
+                              <img 
+                                //fill
+                                className='img-banner'
                                 src={`${IMAGESURL}/${item.imagen}`} 
                                 alt={`${item.nombre}`} 
                               />
