@@ -10,8 +10,6 @@ export default async function handler(req, res) {
         request.headers['prefer'] = 'return=representation';
         const body = req.body;
 
-        //return res.json({data: req.method, body: req.body});
-
         request.requestBody({
             intent: 'CAPTURE',
             purchase_units: [
@@ -25,6 +23,7 @@ export default async function handler(req, res) {
         });
 
         const response = await PaypalClient.execute(request);
+        //return res.json(response.result);
 
         if (response.statusCode !== 201) {
             res.status(500);
