@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import Link from 'next/link';
 import Head from 'next/head'
 import axios from '../../lib/fetch';
-import { API_URL } from '@/config/config';
+import { API_URL, METHODSURL } from '@/config/config';
 
 import { useRouter } from 'next/router';
 
@@ -405,7 +405,7 @@ function ViewProduct(props) {
                                                                                 >
                                                                                     {item.imagen && item.imagen !== "" ?
                                                                                         <img
-                                                                                            src={item.imagen}
+                                                                                            src={METHODSURL+`/`+item.imagen}
                                                                                             className='payment-method-img'
                                                                                         />
                                                                                     : 
