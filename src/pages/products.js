@@ -63,6 +63,7 @@ function Products(props) {
                                     return (
                                     <div key={key} className="col-lg-3 col-6 col-md-4 mb-4">
                                         <Product 
+                                            image={item.imagen}
                                             slug={`${item.slug}`}
                                             name={item.nombre}
                                             type={item.tipo}

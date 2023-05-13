@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-function Product({ name = "" , plans, slug = ""}) {
+function Product({ name = "", imagen = "", plans, slug = ""}) {
 
     return (
         <div className='w-100'>
@@ -18,7 +18,7 @@ function Product({ name = "" , plans, slug = ""}) {
                             <span>50 %</span>
                         </div>
                     </div>
-                    <Image src="/img/products/games/cr.jpg" fill alt="" />
+                    <Image src={imagen} fill alt="" />
                 </div>
                 <div className="px-2 py-4 product-card-data-container">
                     <div className="overlay-text">
