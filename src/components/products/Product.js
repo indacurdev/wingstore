@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { IMAGESURL } from '@/config/config'
 
 function Product({ name = "", image = "", plans, slug = ""}) {
 
@@ -19,14 +20,7 @@ function Product({ name = "", image = "", plans, slug = ""}) {
                         </div>
                     </div>
                     {(image && image !== "") &&
-                        <img src={(image && image !== "") ? `${process.env.NEXT_PUBLIC_IMAGESURL}/${image}` : ''}  />
-                    /*
-                        <Image 
-                            src={(image && image !== "") ? `${process.env.NEXT_PUBLIC_IMAGESURL}/${image}` : ''} 
-                            fill 
-                            alt="" 
-                        />
-                        */
+                        <img src={(image && image !== "") ? `${IMAGESURL}/${image}` : ''}  />
                     }
                 </div>
                 <div className="px-2 py-4 product-card-data-container">

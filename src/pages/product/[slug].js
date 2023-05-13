@@ -398,8 +398,19 @@ function ViewProduct(props) {
                                                                     if(!isDisabled){
                                                                         return(
                                                                             <div className='col-lg-4 col-6 py-2' key={key}>
-                                                                                <button type="button" onClick={() => setselectedPaymentMethod((item === selectedPaymentMethod) ? null : item)} className={((selectedPaymentMethod === item) ? 'active' : '') + ''} >
-                                                                                    {item.nombre_mtp}
+                                                                                <button 
+                                                                                    type="button" 
+                                                                                    onClick={() => setselectedPaymentMethod((item === selectedPaymentMethod) ? null : item)} 
+                                                                                    className={((selectedPaymentMethod === item) ? 'active' : '') + ''} 
+                                                                                >
+                                                                                    {item.imagen && item.imagen !== "" ?
+                                                                                        <img
+                                                                                            src={item.imagen}
+                                                                                            className='payment-method-img'
+                                                                                        />
+                                                                                    : 
+                                                                                        item.nombre_mtp
+                                                                                    }
                                                                                 </button>
                                                                             </div>
                                                                         )

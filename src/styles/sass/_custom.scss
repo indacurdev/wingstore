@@ -963,6 +963,10 @@ footer{
 
         transition: all .2s ease;
 
+        .payment-method-img{
+            object-fit: contain;
+        }
+
         &::before{
             content: "";
             display: block;
