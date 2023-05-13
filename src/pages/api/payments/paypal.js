@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         request.headers['prefer'] = 'return=representation';
         const body = req.body;
 
-        return res.json({data: req.method, body: req.body});
+        //return res.json({data: req.method, body: req.body});
 
         request.requestBody({
             intent: 'CAPTURE',

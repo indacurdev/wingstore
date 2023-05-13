@@ -9,6 +9,7 @@ const Button = (props) => {
     const [{ isPending }] = usePayPalScriptReducer();
     return (
         <div>
+
             {!isPending ?
                 <PayPalButtons 
                     createOrder={async () => {
@@ -44,8 +45,9 @@ const Button = (props) => {
                     style={{ layout: "horizontal" }} 
                 />
             :
-                <i className="fa-solid fa-spin fa-spinner"></i>
+                <div className='paypal-btn-loader'></div>
             }
+            
         </div>
     )
 }
