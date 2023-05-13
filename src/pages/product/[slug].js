@@ -404,7 +404,7 @@ function ViewProduct(props) {
                                                                                     className={((selectedPaymentMethod === item) ? 'active' : '') + ''} 
                                                                                 >
                                                                                     {item.imagen && item.imagen !== "" ?
-                                                                                        <div>
+                                                                                        <div className='content-img'>
                                                                                             <img
                                                                                                 src={METHODSURL+`/`+item.imagen}
                                                                                                 className='payment-method-img'
