@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Head from 'next/head';
 import PrivateRoute from '@/components/auth/PrivateRoute';
 import Layout from '@/components/app/Layout';
@@ -10,10 +10,22 @@ import AccountMenu from '@/components/AccountMenu';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 
+import { toast } from 'react-toastify';
+import { useAuth } from '@/context/auth';
+import { useSelector } from 'react-redux';
+
 function Perfil(props) {
 
-    const data = props.data;
+    const auth      = useAuth();
+    const data      = useSelector((state) => state.session);
     console.log(`data profile`, data);
+
+    const [isEdit, setisEdit]           = useState(false);
+    const [sending, setsending]         = useState(false);
+    const [errors, seterrors]           = useState({});
+
+    const [name, setname]               = useState(data.user.nombre_cliente);
+    const [country, setcountry]         = useState(null);
 
     const wcoinsTooltip = (props) => (
         <Tooltip id="wcoinsTooltip" {...props}>
@@ -29,6 +41,63 @@ function Perfil(props) {
         </Tooltip>
     );
     
+    const editProfile = (e) => {
+        e.preventDefault();
+        let errors = {};
+        let countErrors = 0;
+        seterrors({});
+
+
+        if(name.trim() === ""){
+            errors.name = 'Ingrese su nombre';
+            countErrors++;
+        }
+
+        if(countErrors > 0){
+            toast.error(`Verifique los datos del formulario`);
+            seterrors(errors);
+            //window.scroll(0, (document.getElementById("cardConfig").offsetTop - 70));
+        }else{
+            setsending(true);
+
+            let data = {
+                nombre_cliente: name,
+                pais_id: null
+            };
+
+            const url = `/auth/update_profile`;
+
+            axios({
+                url,
+                method: 'post',
+                data
+            }).then((res) => {
+                const result = res.data;
+                console.log(result);
+
+                //formChangeProfile
+                if(result.result){
+                    toast.success(result.message);
+                    setsending(false);
+                    toggleProfile();
+                    auth.updateUser();
+                }else{
+                    toast.error(result.message);
+                    //window.scroll(0, (document.getElementById("cardConfig").offsetTop - 70));
+                    setsending(false);
+                }
+
+            }).catch((err) => {
+                console.error(err);
+                setsending(false);
+            });
+        }
+    }
+
+    const toggleProfile = () => {
+        setname(data.user.nombre_cliente);
+        setisEdit(!isEdit);
+    }
 
     return (
         <PrivateRoute>
@@ -74,44 +143,87 @@ function Perfil(props) {
                                     }
                                     <div className="card border-0 mb-3">
                                         <div className="card-body">
-                                            <div className="row">
-                                                <div className="col-lg-6 mb-3">
-                                                    <label htmlFor="" className='mb-2'>
-                                                        Nombre
-                                                    </label>
-                                                    <span className='text-readonly'>
-                                                        {data.user.nombre_cliente && data.user.nombre_cliente !== "" ? data.user.nombre_cliente : "-"}
-                                                    </span>
-                                                </div>
-                                                <div className="col-lg-6 mb-3">
-                                                    <label htmlFor="" className='mb-2'>
-                                                        Email
-                                                    </label>
-                                                    <span className='text-readonly'>
-                                                        {data.user.correo_cliente}
-                                                    </span>
-                                                </div>
-                                                <div className="col-lg-12">
-                                                    <label htmlFor="" className='mb-2'>
-                                                        Contraseña
-                                                    </label>
-                                                    <div className="row">
-                                                        <div className="col-lg-10 col-7 mb-2">
-                                                            <span className='text-readonly'>
-                                                                {!data.profile.nompassword ? `Usted aun no ha configurado una contraseña` : '************'}
-                                                            </span>
-                                                        </div>
-                                                        <div className="col-lg-2 col-5 mb-2">
-                                                            <Link 
-                                                                href={`/cuenta/configuracion`} 
-                                                                className='btn fw-bold w-100 btn-secondary'
-                                                            >
-                                                                Cambiar
-                                                            </Link>
+                                            <div className='text-end'>
+                                                {!isEdit &&
+                                                    <button onClick={() => toggleProfile()} className='btn btn-primary'>
+                                                        Editar perfil <i class="ms-2 fa-solid fa-user-pen"></i>
+                                                    </button>
+                                                }
+                                            </div>
+                                            {!isEdit &&
+                                                <div className="row">
+                                                    <div className="col-lg-6 mb-3">
+                                                        <label htmlFor="" className='mb-2'>
+                                                            Nombre
+                                                        </label>
+                                                        <span className='text-readonly'>
+                                                            {data.user.nombre_cliente && data.user.nombre_cliente !== "" ? data.user.nombre_cliente : "-"}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-6 mb-3">
+                                                        <label htmlFor="" className='mb-2'>
+                                                            Email
+                                                        </label>
+                                                        <span className='text-readonly'>
+                                                            {data.user.correo_cliente}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-lg-12">
+                                                        <hr />
+                                                        <label htmlFor="" className='mb-2'>
+                                                            Contraseña
+                                                        </label>
+                                                        <div className="row">
+                                                            <div className="col-lg-10 col-7 mb-2">
+                                                                <span className='text-readonly'>
+                                                                    {data.profile.nopassword ? `Usted aun no ha configurado una contraseña` : '************'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="col-lg-2 col-5 mb-2">
+                                                                <Link 
+                                                                    href={`/cuenta/configuracion`} 
+                                                                    className='btn fw-bold w-100 btn-secondary'
+                                                                >
+                                                                    Cambiar
+                                                                </Link>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            }
+
+                                            {isEdit &&
+                                                <form id='formChangeProfile' onSubmit={(e) => editProfile(e)}>
+                                                    <div className="row">
+                                                        <div className="col-lg-12 mb-3">
+                                                            <label htmlFor="" className='mb-2'>
+                                                                Nombre
+                                                            </label>
+                                                            <input 
+                                                                type="text" 
+                                                                className='form-control'
+                                                                placeholder='Nombre'
+                                                                id='name'
+                                                                defaultValue={name}
+                                                                onChange={(e) => setname(e.target.value)}
+                                                            />
+                                                            {errors[`name`] &&
+                                                                <div className='text-danger fw-bold small py-2 small'>
+                                                                    {errors[`name`]}
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>  
+                                                    <div className="text-end">
+                                                        <button onClick={() => toggleProfile()} type='button' className='btn border-dark fw-bold me-2'>
+                                                            Cancelar
+                                                        </button>
+                                                        <button type='submit' className='btn btn-primary fw-bold'>
+                                                            {sending ? <i className="fa-solid fa-spin fa-spinner"></i> : `Editar`}
+                                                        </button>
+                                                    </div>
+                                                </form>  
+                                            }
                                         </div>
                                     </div>
 
@@ -179,16 +291,6 @@ function Perfil(props) {
             </Layout>
         </PrivateRoute>
     );
-}
-
-Perfil.getInitialProps = async ({ req, res }) => {
-    const me        = await axios.get(`/auth/me`);
-    //const lastSales = await axios.get(`/auth/sales`);
-
-    return {
-        data:  me.data,
-        //sales: lastSales.data
-    }
 }
 
 export default Perfil

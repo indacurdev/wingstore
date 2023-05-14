@@ -21,6 +21,11 @@ export const AuthProvider = ({ children }) => {
         await dispatch(setAuth(me.data));
     }
 
+    const updateUser = async (token, user) => {
+        const me = await axios.get(`/auth/me`);
+        await dispatch(setAuth(me.data));
+    }
+
     const handleLogout = async () => {
         cookie.remove('wtoken');
         await dispatch(logout());
@@ -30,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         // Using the provider so that ANY component in our application can 
         // use the values that we are sending.
 
-        <AuthContext.Provider value={{ auth, setUser, handleLogout }}>
+        <AuthContext.Provider value={{ auth, setUser, handleLogout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );
