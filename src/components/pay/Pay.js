@@ -337,7 +337,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                               Total {`(${country.codigo_iso})`}:
                             </span> 
                             <span className='ms-2 text-primary'>
-                              {Number(total * tasa)}
+                              {plan.precio_local ? `${plan.precio_local} ${plan.moneda_local ? plan.moneda_local : ''}` : Number(total * tasa)}
                             </span>
                           </h5>
                         </div>

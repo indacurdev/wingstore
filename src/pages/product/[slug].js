@@ -515,7 +515,7 @@ ViewProduct.getInitialProps = wrapper.getInitialPageProps((store) => async ({ re
 
     const { slug }      = query;
 
-    const product       = await axios.get(`/product/${slug}`);
+    const product       = await axios.get(`/product/${slug}/${pais}`);
     const idProduct     = product.data.product.id_producto;
 
     const methods       = await axios.get(`/methods/${pais}/${idProduct}`);
