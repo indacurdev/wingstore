@@ -19,9 +19,9 @@ function Product({ name = "", image = "", plans, slug = ""}) {
                             <span>50 %</span>
                         </div>
                     </div>
-                    {(image && image !== "") &&
-                        <img src={(image && image !== "") ? `${PRODUCTSURL}/${image}` : ''}  />
-                    }
+                    
+                    <img src={(image && image !== "") ? `${PRODUCTSURL}/${image}` : '/img/imgproductdefault.svg'}  />
+                    
                 </div>
                 <div className="px-2 py-4 product-card-data-container">
                     <div className="overlay-text">
