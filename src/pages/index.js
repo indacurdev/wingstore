@@ -47,14 +47,14 @@ function Home(props) {
                     return (
                       <SwiperSlide key={key}>
                         <div className="min-vh-100 d-flex align-items-center position-relative">
-                            <div className='img-full'>
+                            
                               <img 
                                 //fill
                                 className='img-banner'
-                                src={`${IMAGESURL}/${item.imagen}`} 
+                                src={`${IMAGESURL+item.imagen}`} 
                                 alt={`${item.nombre}`} 
                               />
-                            </div>
+                            
                         </div>
                       </SwiperSlide>
                     )
