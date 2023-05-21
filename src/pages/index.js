@@ -46,7 +46,7 @@ function Home(props) {
                   {banners.map((item, key) => {
                     return (
                       <SwiperSlide key={key}>
-                        <div className="min-vh-100 d-flex align-items-center position-relative">
+                        <div className="min-vh-100 d-flex align-items-center position-relative content-banner">
                             
                               <img 
                                 //fill
