@@ -52,7 +52,7 @@ function Header() {
               </div>
 
               {/* Dropdowns */}
-              <div className="col-lg-4 col-9 d-flex justify-content-end">
+              <div className="col-lg-4 col-9 d-flex align-items-center justify-content-end">
 
                 {/* LANG DROPDOWN */}
                 <CountriesDropdown />

@@ -422,35 +422,33 @@ function ViewProduct(props) {
                                                         </div>
                                                     </div>
                                                 }
-
-                                                {/* 
-                                                    <div className="card border-0 w-100 shadow mb-4">
-                                                        <div className="card-header py-3 bg-primary">
-                                                            <h5 className='fw-bold fb h4 mb-0 text-secondary'>
-                                                                Código promocional
-                                                            </h5>
-                                                        </div>
-                                                        <div className="card-body py-4">
-                                                            <div className="row">
-                                                                <div className="col-lg-9 py-2">
-                                                                    <input 
-                                                                        type="text" 
-                                                                        className="form-control" 
-                                                                        placeholder='Ingrese el código' 
-                                                                    />
-                                                                </div>
-                                                                <div className="col-lg-3 py-2">
-                                                                    <button 
-                                                                        disabled
-                                                                        className='btn w-100 btn-secondary'
-                                                                    >
-                                                                        Aplicar
-                                                                    </button>
-                                                                </div>
+                                                
+                                                <div className="card border-0 w-100 shadow mb-4">
+                                                    <div className="card-header py-3 bg-primary">
+                                                        <h5 className='fw-bold fb h4 mb-0 text-secondary'>
+                                                            Código promocional
+                                                        </h5>
+                                                    </div>
+                                                    <div className="card-body py-4">
+                                                        <div className="row">
+                                                            <div className="col-lg-9 py-2">
+                                                                <input 
+                                                                    type="text" 
+                                                                    className="form-control" 
+                                                                    placeholder='Ingrese el código' 
+                                                                />
+                                                            </div>
+                                                            <div className="col-lg-3 py-2">
+                                                                <button 
+                                                                    disabled
+                                                                    className='btn w-100 btn-secondary'
+                                                                >
+                                                                    Aplicar
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                */}
+                                                </div>
 
                                                 <div className='text-end'>
                                                     {//auth ?

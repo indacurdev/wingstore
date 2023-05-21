@@ -23,12 +23,22 @@ function UserDropdown() {
 
     return (
         <>
+            <btn className='fw-bold'>
+                <i className="fa-solid fa-coins" />
+                <span className="ms-3">
+                    {user.wingscoins}
+                </span>
+            </btn>
             <Dropdown className='dropdown-user'>
                 <Dropdown.Toggle id="dropdown-user">
+                    <button className='btn btn-unstyled'>
+                        <i className='fa-regular fa-user'></i>
+                    </button>
+                    {/* 
                     <div className='fw-bold'>
                         <i className="fa-solid fa-coins" />
-                        <span className="ms-2">
-                            {user.puntos_cliente}
+                        <span className="ms-3">
+                            {user.wingscoins}
                         </span>
                     </div>
                     <div className="d-none">
@@ -37,6 +47,7 @@ function UserDropdown() {
                             {(user.nombre_cliente && user.nombre_cliente !== "") ? user.nombre_cliente : user.correo_cliente}
                         </span>
                     </div>
+                    */}
                 </Dropdown.Toggle>
                 <Dropdown.Menu align="end" className='menu-user-top'>
                 <div className="px-3 py-2">

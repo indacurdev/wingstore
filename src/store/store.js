@@ -29,7 +29,7 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  blacklist: ['session']
+  blacklist: ['session', 'app']
 }
 
 const rootReducer = combineReducers({
