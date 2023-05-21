@@ -131,7 +131,11 @@ function CanjearWpoints(props) {
                                                 </div>
 
                                                 <div className="text-end">
-                                                    <button type='submit' className='btn btn-primary fw-bold'>
+                                                    <button 
+                                                        type='submit' 
+                                                        className='btn btn-primary fw-bold'
+                                                        disabled={sending}
+                                                    >
                                                         {sending ? <i className="fa-solid fa-spin px-5 fa-spinner"></i> : `Realizar cambio`}
                                                     </button>
                                                 </div>

@@ -33,8 +33,42 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
   const country = app.selectedCountry;
   const tasa    = country.valor_tasa;
 
+  console.log(tasa);
+
   const [count, setcount] = useState(0);
   const [success, setsuccess] = useState(false);
+
+  const getTotal = () => {
+    let totalData = {};
+
+    if(plan.precio_local){
+      totalData.type    = 'local';
+      totalData.moneda  = country.moneda_local;
+      totalData.value   = plan.precio_local;
+
+      totalData.subtotalusd = plan.precio_plan;
+      totalData.string  = 'USD $'+totalData.subtotalusd+' / '+totalData.value +' '+country.moneda_local;
+    } else if(method.tipo_pasarela === 'manual'){
+      totalData.type    = 'manual';
+      totalData.moneda  = country.moneda_local;
+
+      totalData.subtotalusd = plan.precio_plan;
+      totalData.value   = Number(plan.precio_plan * tasa);
+      totalData.string  = 'USD $'+totalData.subtotalusd+' / '+totalData.value +' '+country.moneda_local;
+    } else {
+      totalData.type    = 'usd';
+      totalData.moneda  = 'USD $';
+
+      totalData.subtotalusd = plan.precio_plan;
+      totalData.value   = plan.precio_plan;
+      totalData.string  = 'USD $'+totalData.value ;
+    }
+
+    return totalData;
+  }
+
+  const dataTotal       = getTotal();
+  const total           = dataTotal.value;
 
   const [payData, setpayData] = useState({
     nombre:     auth ? user.nombre_cliente : "",
@@ -42,10 +76,8 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
     pagoMovil:  "",
     ref:        "",
     note:       "",
-    amount:     plan.precio_plan
+    amount:     total
   });
-
-  const total = plan.precio_plan;
 
   const handleInputChange = (e) => {
 
@@ -253,10 +285,6 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
     }
   }
   
-  console.log("CODIGO MONEDA", country.codigo_moneda);
-  
-  const formatter = new Intl.NumberFormat(`es-VE`, { style: 'currency', currency: 'VES' });
-  
   return (
     <div id='paymentContainer'>
       {!success ?
@@ -320,7 +348,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                               Subtotal:
                             </span> 
                             <span className='ms-2 text-secondary'>
-                              USD ${plan.precio_plan}
+                              {dataTotal.string}
                             </span>
                           </h5>
                           <hr />
@@ -329,9 +357,10 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                               Total:
                             </span> 
                             <span className='ms-2 text-primary'>
-                              USD ${total}
+                              {dataTotal.string}
                             </span>
                           </h5>
+                          {/* 
                           <h5 className='fw-bold'>
                             <span className='fw-bold'>
                               Total {`(${country.codigo_iso})`}:
@@ -340,6 +369,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                               {plan.precio_local ? `${plan.precio_local} ${plan.moneda_local ? plan.moneda_local : ''}` : Number(total * tasa)}
                             </span>
                           </h5>
+                          */}
                         </div>
                       </div>
                       {accounts && Array.isArray(accounts) && accounts.length > 0 &&
