@@ -49,6 +49,12 @@ function ViewProduct(props) {
 
     const [email, setemail]                 = useState('');
 
+    const [sendingCode, setsendingCode]     = useState(``);
+    const [discountCode, setdiscountCode]   = useState('');
+    const [discount, setdiscount]           = useState(null);
+
+    const [comission, setcomission]         = useState(null);
+
     console.log(selectedPaymentMethod);
     // console.log(template);
 
@@ -138,51 +144,49 @@ function ViewProduct(props) {
         }else{
 
             setsending(true);
-            /*
-            OLD VALIDATE CODE
-            axios.get(`verify_code/${props.id+`/`+selectedPlan.puntos_plan}`)
+         
+            axios.get(`product_comission/${props.id+`/`+selectedPaymentMethod.id_mtp}`)
             .then((res) => {
                 const result = res.data;
                 console.log('Verify', result);
 
                 if(result.result){
-                }else{
-                    toast.error(result.message);
+                    let comision = result.comission;
+                    setcomission(comision);
                 }
+
+                if(selectedPaymentMethod.tipo_pasarela === 'manual'){
+
+                    axios.get(`accounts/${selectedPaymentMethod.id_mtp}`)
+                    .then((res) => {
+                        const resultacc = res.data;
+                        //console.log('Verify', result);
+
+                        if(resultacc.result){
+                            setpayData(data);
+                            setsending(false);
+                            setaccounts(resultacc.accounts);
+                            window.scroll(0, 0);
+                            setpay(true);
+                        }else{
+                            toast.error(result.message);
+                        }
+
+                    }).catch((err) => {
+                        console.log(err);
+                        setsending(false);
+                    });
+                }else{
+                    setsending(false);
+                    setpayData(data);
+                    window.scroll(0, 0);
+                    setpay(true);
+                }
+           
             }).catch((err) => {
                 console.log(err);
                 setsending(false);
             });
-            */
-
-            if(selectedPaymentMethod.tipo_pasarela === 'manual'){
-
-                axios.get(`accounts/${selectedPaymentMethod.id_mtp}`)
-                .then((res) => {
-                    const resultacc = res.data;
-                    //console.log('Verify', result);
-
-                    if(resultacc.result){
-                        setpayData(data);
-                        setsending(false);
-                        setaccounts(resultacc.accounts);
-                        window.scroll(0, 0);
-                        setpay(true);
-                    }else{
-                        toast.error(result.message);
-                    }
-
-                }).catch((err) => {
-                    console.log(err);
-                    setsending(false);
-                });
-            }else{
-                setsending(false);
-                setpayData(data);
-                window.scroll(0, 0);
-                setpay(true);
-            }
-
                
         }
     }
@@ -217,6 +221,44 @@ function ViewProduct(props) {
     const changePlan = (item) => {
         setselectedPlan(item);
         setselectedPaymentMethod(null);
+        setdiscount(null);
+        setdiscountCode('');
+    }
+
+    const applyDiscount = (e) => {
+        e.preventDefault();
+        setsendingCode(false);
+
+        if(discountCode.trim() === ``){
+            toast.error('Debe ingresar un código');
+        }else{
+
+            setsendingCode(true);
+            const urlVerifyDiscount = 'search_discount'
+            axios({
+                method: "post",
+                url: urlVerifyDiscount,
+                data: {
+                    codigo_cupon: discountCode.trim(),
+                    plan: selectedPlan
+                }
+            }).then((res) => {
+                console.log('DISCOUNT', res.data);
+                const result = res.data;
+                
+                if(result.result){
+                    let cupon = result.cupon;
+                    setdiscount(cupon);
+                    toast.success(`Se ha aplicado un cupón de descuento por ${discount.tipo_descuento === 'dolares' ? `USD ${cupon.monto_valor}` : `${cupon.monto_valor}%` }`);
+                }else{
+                    toast.error(result.message);
+                }
+
+                setsendingCode(false);
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
     console.log(selectedPlan);
@@ -270,7 +312,11 @@ function ViewProduct(props) {
                                         </div>
                                         
                                         <div className="col-lg-7">
-                                            <form id="formProduct" action="" onSubmit={(e) => proccedToPay(e)}>
+                                            <form 
+                                                id="formProduct" 
+                                                action="" 
+                                                onSubmit={(e) => proccedToPay(e)}
+                                            >
 
                                                 {(formTemplate.length > 0) &&
                                                     <div className="card border-0 w-100 shadow mb-4">
@@ -423,33 +469,57 @@ function ViewProduct(props) {
                                                     </div>
                                                 }
                                                 
-                                                
-                                                <div className="card border-0 w-100 shadow mb-4">
-                                                    <div className="card-header py-3 bg-primary">
-                                                        <h5 className='fw-bold fb h4 mb-0 text-secondary'>
-                                                            Código promocional
-                                                        </h5>
-                                                    </div>
-                                                    <div className="card-body py-4">
-                                                        <div className="row">
-                                                            <div className="col-lg-9 py-2">
-                                                                <input 
-                                                                    type="text" 
-                                                                    className="form-control" 
-                                                                    placeholder='Ingrese el código' 
-                                                                />
-                                                            </div>
-                                                            <div className="col-lg-3 py-2">
-                                                                <button 
-                                                                    disabled
-                                                                    className='btn w-100 btn-secondary'
-                                                                >
-                                                                    Aplicar
-                                                                </button>
+                                                {discount 
+                                                ?
+                                                    <div className="card border-0 w-100 shadow mb-4">
+                                                        <div className="card-header py-3 bg-primary">
+                                                            <h5 className='fw-bold fb h4 mb-0 text-secondary'>
+                                                                Código de descuento
+                                                            </h5>
+                                                        </div>
+                                                        <div className="card-body py-4">
+                                                            <div className='alert alert-success'>
+                                                                Descuento aplicado por {
+                                                                discount.tipo_descuento === 'dolares' 
+                                                                    ? 
+                                                                        <span className="fw-bold">USD ${discount.monto_valor}</span> 
+                                                                    :   <span className="fw-bold">{discount.monto_valor}%</span>
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                :
+                                                    <div className="card border-0 w-100 shadow mb-4">
+                                                        <div className="card-header py-3 bg-primary">
+                                                            <h5 className='fw-bold fb h4 mb-0 text-secondary'>
+                                                                Código de descuento
+                                                            </h5>
+                                                        </div>
+                                                        <div className="card-body py-4">
+                                                            <div className="row">
+                                                                <div className="col-lg-9 py-2">
+                                                                    <input 
+                                                                        type="text" 
+                                                                        className="form-control" 
+                                                                        placeholder='Ingrese el código' 
+                                                                        value={discountCode}
+                                                                        onChange={(e) => setdiscountCode(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                                <div className="col-lg-3 py-2">
+                                                                    <button 
+                                                                        type='button'
+                                                                        className='btn w-100 btn-secondary fw-bold'
+                                                                        onClick={(e) => applyDiscount(e)}
+                                                                        disabled={sendingCode || !(selectedPlan && selectedPaymentMethod)}
+                                                                    >
+                                                                        {!sendingCode ? <span>Aplicar</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
 
                                                 <div className='text-end'>
                                                     {//auth ?
@@ -458,7 +528,12 @@ function ViewProduct(props) {
                                                             className='btn btn-primary px-4 fw-bold btn-lg'
                                                             type='submit'
                                                         >
-                                                            {!sending ? <span className='px-3'>Continuar compra</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
+                                                            {!sending 
+                                                            ? 
+                                                                <span className='px-1'>Continuar compra</span> 
+                                                            : 
+                                                                <i className="fa-solid fa-spin fa-spinner"></i>
+                                                            }
                                                         </button>
                                                         /*
                                                     :
@@ -477,7 +552,17 @@ function ViewProduct(props) {
                                         </div>
                                     </div>
                                     :
-                                    <Pay email={email} cancel={() => cancelPay()} accounts={accounts} product={product} data={payData} method={selectedPaymentMethod} plan={selectedPlan} />
+                                    <Pay 
+                                        email={email} 
+                                        cancel={() => cancelPay()} 
+                                        accounts={accounts} 
+                                        product={product} 
+                                        data={payData} 
+                                        method={selectedPaymentMethod} 
+                                        plan={selectedPlan} 
+                                        discount={discount}
+                                        comission={comission}
+                                    />
                                 }
 
                             </div>

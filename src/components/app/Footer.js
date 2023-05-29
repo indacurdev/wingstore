@@ -32,18 +32,18 @@ function Footer() {
                   <div className="col-lg-3 col-12 col-sm-6 py-2 text-light">
                     <ul className='list-unstyled list-links'>
                       <li>
-                        <a href="" className='link-unstyled'>
+                        <a href="/terminos-y-condiciones" className='link-unstyled'>
                           Términos y condiciones
                         </a>
                       </li>
                       <li>
-                        <a href="" className='link-unstyled'>
-                          Politica de privacidad
+                        <a href="/politica-de-privacidad" className='link-unstyled'>
+                          Política de privacidad
                         </a>
                       </li>
                       <li>
-                        <a href="" className='link-unstyled'>
-                          Sobre Wings
+                        <a href="/politica-de-reembolso" className='link-unstyled'>
+                          Política de reembolso
                         </a>
                       </li>
                     </ul>

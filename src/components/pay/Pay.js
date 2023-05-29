@@ -11,29 +11,24 @@ import PaypalBtn from './PaypalBtn';
 import StripeForm, { ContentStripeForm } from './StripeForm';
 import { useRouter } from 'next/router';
 
-function Pay({cancel, product, data, method, plan, accounts, email}) {
+function Pay({cancel, product, data, method, plan, accounts, email, discount, comission}) {
   
-  // console.log('PAYMENT ========');
-  // console.log(product);
-  // console.log(data);
   // console.log('metodo', method);
   // console.log('plan', plan);
-  console.log('Email', email);
+  console.log('Comission', comission);
 
-  const router          = useRouter();
-  const session         = useSelector((state) => state.session, shallowEqual);
-  const app             = useSelector((state) => state.app, shallowEqual);
-  const [date, setDate] = useState(new Date());
+  const router                = useRouter();
+  const session               = useSelector((state) => state.session, shallowEqual);
+  const app                   = useSelector((state) => state.app, shallowEqual);
+  const [date, setDate]       = useState(new Date());
 
   const [sending, setsending] = useState(false);
-  const [errors, seterrors] = useState({});
+  const [errors, seterrors]   = useState({});
 
   const auth    = session.auth;
   const user    = session.user;
   const country = app.selectedCountry;
   const tasa    = country.valor_tasa;
-
-  console.log(tasa);
 
   const [count, setcount] = useState(0);
   const [success, setsuccess] = useState(false);
@@ -296,6 +291,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
 
                     {/* ORDEN */}
                     <div className='col-lg-5 py-2'>
+
                       <div className="card">
                         <div className="card-header py-3 bg-primary border-primary">
                           <h3 className='h2 text-secondary fb mb-0'>
@@ -303,9 +299,9 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                           </h3>
                         </div>
                         <div className="card-body">
-                          <h2 className='mb-3'>
-                            <span className='text-secondary fw-bold'>
-                              {product.nombre} (<span className='fw-bold text-primary'>{plan.puntos_plan}</span>)
+                          <h2 className='mb-3 h1'>
+                            <span className='fb fw-bold'>
+                              {product.nombre}
                             </span>
                           </h2>
                           {/* 
@@ -317,7 +313,16 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                             </h5>
                           */}
                           <hr />
-                          <h5 className='h5'>
+                          <h5 className='h6'>
+                            <span className='fw-boldd'>
+                              Plan seleccionado:
+                            </span> 
+                            <span className='ms-2 text-secondary'>
+                              <span className='fw-bold text-primary'>{plan.puntos_plan}</span>
+                            </span>
+                          </h5>
+
+                          <h5 className='h6'>
                             <span className='fw-boldd'>
                               Bonificación en <span className='fw-bold'>wpoints</span>:
                             </span> 
@@ -327,7 +332,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                             </span>
                           </h5>
                    
-                          <h5 className='h5'>
+                          <h5 className='h6'>
                             <span className='fw-boldd'>
                               Método de pago:
                             </span> 
@@ -343,7 +348,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                             </h5>
                           */}
                    
-                          <h5 className='h5'>
+                          <h5 className='h6'>
                             <span className='fw-boldd'>
                               Subtotal:
                             </span> 
@@ -351,8 +356,25 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                               {dataTotal.string}
                             </span>
                           </h5>
+
+                          {discount &&
+                            <h5 className='h6'>
+                              <span className='fw-boldd'>
+                                Código descuento:
+                              </span> 
+                              <span className='ms-2 text-secondary'>
+                                {discount.tipo_descuento === 'dolares' 
+                                    ? 
+                                        <span>USD ${discount.monto_valor}</span> 
+                                    :   <span>{discount.monto_valor}%</span>
+                                }
+                              </span>
+                            </h5>
+                          }
+
                           <hr />
-                          <h5 className='fw-bold'>
+
+                          <h5 className='h5 fw-bold'>
                             <span className='fw-bold'>
                               Total:
                             </span> 
@@ -372,6 +394,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                           */}
                         </div>
                       </div>
+
                       {accounts && Array.isArray(accounts) && accounts.length > 0 &&
                         <div className="card my-3">
                           <div className="card-header py-3 bg-primary border-primary">
@@ -386,38 +409,23 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                                   return (
                                     <div key={key}>
                                       
-                                      <div className="row">
-                                        <div className="col-lg-6 mb-3">
-                                          <label htmlFor="" className='mb-2'>
-                                            Titular:
-                                          </label>
-                                          <span className='text-readonly'>
-                                            {item.nombre_titular}
-                                          </span>
-                                        </div>
-                                        <div className="col-lg-6 mb-3">
-                                          <label htmlFor="" className='mb-2'>
-                                            Numero de identidad:
-                                          </label>
-                                          <span className='text-readonly'>
-                                            {item.cedula_identidad}
-                                          </span>
-                                        </div>
-                                        <div className="col-lg-6 mb-3">
-                                          <label htmlFor="" className='mb-2'>
-                                            Número cuenta:
-                                          </label>
-                                          <span className='text-readonly'>
-                                            {item.numero_cuenta}
-                                          </span>
-                                        </div>
-                                        <div className="col-lg-6 mb-3">
-                                          <label htmlFor="" className='mb-2'>
-                                            Teléfono:
-                                          </label>
-                                          <span className='text-readonly'>
-                                            {item.telefono}
-                                          </span>
+                                      <div className="alert" style={{borderColor: '#ced4da'}}>
+                                        {item.pago_movil === 'si'
+                                          ?
+                                            <div>
+                                                <div>
+                                                  <i className="fa-solid fa-building-columns me-2"></i> 
+                                                  <span className="fw-bold">{item.numero_cuenta}</span>
+                                                  <i className="fa-solid fa-phone me-2 ms-2"></i> {item.telefono}
+                                                </div>
+                                             </div>
+                                          :
+                                            <div>
+                                              <i className="fa-solid fa-building-columns me-2"></i> {item.tipo_cuenta} <span className="fw-bold">{item.numero_cuenta}</span>
+                                            </div>
+                                        }
+                                        <div>
+                                          <i className="fa-regular fa-user me-2"></i> {item.nombre_titular} - {item.cedula_identidad}
                                         </div>
                                       </div>
                                       
@@ -429,6 +437,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                           </div>
                         </div>
                       }
+
                     </div>
 
                     {/* MANUAL ----------------------- */}
@@ -663,7 +672,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                                     onClick={() => sendAutomaticOrder()} 
                                     className='btn btn-primary me-2 btn-lg fw-bold'
                                   >
-                                    {!sending ? <span className='px-5'>Pagar con wcoins</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
+                                    {!sending ? <span className='px-2'>Pagar con wcoins</span> : <i className="fa-solid fa-spin fa-spinner"></i>}
                                   </button>
                                   <button 
                                     disabled={sending}
@@ -727,7 +736,7 @@ function Pay({cancel, product, data, method, plan, accounts, email}) {
                 <div className="text-center">
 
                   <div className='mb-4 text-success'>
-                    <i class="fa-regular fa-6x fa-circle-check"></i>
+                    <i className="fa-regular fa-6x fa-circle-check"></i>
                   </div>
                   <h3 className='h2 fw-bold'>
                     ¡Compra realizada exitosamente!
