@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function Footer() {
   return (
@@ -32,19 +33,19 @@ function Footer() {
                   <div className="col-lg-3 col-12 col-sm-6 py-2 text-light">
                     <ul className='list-unstyled list-links'>
                       <li>
-                        <a href="/terminos-y-condiciones" className='link-unstyled'>
+                        <Link href="/terminos-y-condiciones" className='link-unstyled'>
                           Términos y condiciones
-                        </a>
+                        </Link>
                       </li>
                       <li>
-                        <a href="/politica-de-privacidad" className='link-unstyled'>
+                        <Link href="/politica-de-privacidad" className='link-unstyled'>
                           Política de privacidad
-                        </a>
+                        </Link>
                       </li>
                       <li>
-                        <a href="/politica-de-reembolso" className='link-unstyled'>
+                        <Link href="/politica-de-reembolso" className='link-unstyled'>
                           Política de reembolso
-                        </a>
+                        </Link>
                       </li>
                     </ul>
                   </div>
