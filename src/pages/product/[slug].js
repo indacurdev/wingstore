@@ -162,15 +162,17 @@ function ViewProduct(props) {
                         const resultacc = res.data;
                         //console.log('Verify', result);
 
-                        if(resultacc.result){
+                        //if(resultacc.result){
                             setpayData(data);
                             setsending(false);
                             setaccounts(resultacc.accounts);
                             window.scroll(0, 0);
                             setpay(true);
+                        /*
                         }else{
                             toast.error(result.message);
                         }
+                        */
 
                     }).catch((err) => {
                         console.log(err);
